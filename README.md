@@ -18,7 +18,7 @@ import '@github/custom-element-element'
 <custom-element></custom-element>
 ```
 
-## Browser Support
+## Browser support
 
 - Chrome 54+
 - Safari 10.1+
