@@ -5,13 +5,13 @@ Boilerplate for creating a custom element.
 ## Installation
 
 ```
-$ npm install @github/custom-element
+$ npm install @github/custom-element-element
 ```
 
 ## Usage
 
 ```js
-import '@github/custom-element'
+import '@github/custom-element-element'
 ```
 
 ```html
