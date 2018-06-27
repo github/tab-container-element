@@ -20,8 +20,13 @@ import '@github/custom-element-element'
 
 ## Browser support
 
-- Chrome 54+
-- Safari 10.1+
-- Firefox (Custom Element polyfill required)
-- Internet Explorer 11+ (Custom Element polyfill required)
-- Microsoft Edge (Custom Element polyfill required)
+Browsers without native [custom element support][support] require a [polyfill][].
+
+- Chrome
+- Firefox
+- Safari
+- Internet Explorer 11
+- Microsoft Edge
+
+[support]: https://caniuse.com/#feat=custom-elementsv1
+[polyfill]: https://github.com/webcomponents/custom-elements
