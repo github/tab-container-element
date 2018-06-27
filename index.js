@@ -1,3 +1,5 @@
+/* @flow */
+
 class CustomElementElement extends HTMLElement {
   constructor() {
     super()
