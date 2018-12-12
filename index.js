@@ -61,7 +61,7 @@ class TabContainerElement extends HTMLElement {
     tab.focus()
     panel.hidden = false
 
-    panel.dispatchEvent(new CustomEvent('selectmenu:tabchange'))
+    panel.dispatchEvent(new CustomEvent('tabcontainer:tabchange'))
   }
 }
 
