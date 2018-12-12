@@ -1,11 +1,11 @@
 {
-  "name": "@github/custom-element-element",
+  "name": "@github/tab-container-element",
   "version": "0.0.1",
-  "description": "Boilerplate for creating a custom element.",
+  "description": "Tab container element",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
   "license": "MIT",
-  "repository": "github/custom-element-boilerplate",
+  "repository": "github/tab-container-boilerplate",
   "files": [
     "dist"
   ],
