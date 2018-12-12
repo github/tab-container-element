@@ -1,21 +1,23 @@
-# &lt;custom-element&gt; element
+# &lt;tab-container&gt; element
 
-Boilerplate for creating a custom element.
+A accessible tab container element with keyboard support.
+
+Tries to follow the [ARIA best practices guide on tabs](https://www.w3.org/TR/wai-aria-practices/#tabpanel).
 
 ## Installation
 
 ```
-$ npm install @github/custom-element-element
+$ npm install @github/tab-container-element
 ```
 
 ## Usage
 
 ```js
-import '@github/custom-element-element'
+import '@github/tab-container-element'
 ```
 
 ```html
-<custom-element></custom-element>
+<tab-container></tab-container>
 ```
 
 ## Browser support
