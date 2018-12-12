@@ -17,7 +17,22 @@ import '@github/tab-container-element'
 ```
 
 ```html
-<tab-container></tab-container>
+<tab-container>
+    <div role="tablist">
+      <button type="button" role="tab" aria-selected="true">Tab one</button>
+      <button type="button" role="tab">Tab two</button>
+      <button type="button" role="tab">Tab three</button>
+    </div>
+    <div role="tabpanel">
+      Panel 1
+    </div>
+    <div role="tabpanel" hidden>
+      Panel 2
+    </div>
+    <div role="tabpanel" hidden>
+      Panel 3
+    </div>
+  </tab-container>
 ```
 
 ## Browser support
