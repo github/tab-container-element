@@ -1,8 +1,6 @@
 # &lt;tab-container&gt; element
 
-A accessible tab container element with keyboard support.
-
-Tries to follow the [ARIA best practices guide on tabs](https://www.w3.org/TR/wai-aria-practices/#tabpanel).
+A accessible tab container element with keyboard support. Follows the [ARIA best practices guide on tabs](https://www.w3.org/TR/wai-aria-practices/#tabpanel).
 
 ## Installation
 
@@ -18,21 +16,21 @@ import '@github/tab-container-element'
 
 ```html
 <tab-container>
-    <div role="tablist">
-      <button type="button" role="tab" aria-selected="true">Tab one</button>
-      <button type="button" role="tab">Tab two</button>
-      <button type="button" role="tab">Tab three</button>
-    </div>
-    <div role="tabpanel">
-      Panel 1
-    </div>
-    <div role="tabpanel" hidden>
-      Panel 2
-    </div>
-    <div role="tabpanel" hidden>
-      Panel 3
-    </div>
-  </tab-container>
+  <div role="tablist">
+    <button type="button" role="tab" aria-selected="true">Tab one</button>
+    <button type="button" role="tab">Tab two</button>
+    <button type="button" role="tab">Tab three</button>
+  </div>
+  <div role="tabpanel">
+    Panel 1
+  </div>
+  <div role="tabpanel" hidden>
+    Panel 2
+  </div>
+  <div role="tabpanel" hidden>
+    Panel 3
+  </div>
+</tab-container>
 ```
 
 ## Browser support
