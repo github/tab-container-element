@@ -8,6 +8,7 @@
     {
       "files": "test/**/*.js",
       "rules": {
+        "flowtype/require-valid-file-annotation": "off",
         "github/unescaped-html-literal": "off"
       }
     }
