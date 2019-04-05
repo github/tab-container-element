@@ -61,7 +61,12 @@ class TabContainerElement extends HTMLElement {
     tab.focus()
     panel.hidden = false
 
-    panel.dispatchEvent(new CustomEvent('tabcontainer:tabchange'))
+    this.dispatchEvent(
+      new CustomEvent('tab-container-change', {
+        bubbles: true,
+        detail: {relatedTarget: panel}
+      })
+    )
   }
 }
 
