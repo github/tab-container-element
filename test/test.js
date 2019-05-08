@@ -45,6 +45,7 @@ describe('tab-container', function() {
       tabContainer.addEventListener('tab-container-change', event => {
         counter++
         assert.equal(event.detail.relatedTarget, panels[1])
+        assert.equal(event.detail.selectedTab, tabs[1])
       })
 
       tabs[1].click()

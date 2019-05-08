@@ -64,7 +64,7 @@ class TabContainerElement extends HTMLElement {
     this.dispatchEvent(
       new CustomEvent('tab-container-change', {
         bubbles: true,
-        detail: {relatedTarget: panel}
+        detail: {relatedTarget: panel, selectedTab: tab}
       })
     )
   }
