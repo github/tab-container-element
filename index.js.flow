@@ -1,0 +1,7 @@
+/* @flow strict */
+
+declare module '@github/tab-container-element' {
+  declare export default class TabContainerElement extends HTMLElement {
+    selectTab(index: number): void;
+  }
+}
