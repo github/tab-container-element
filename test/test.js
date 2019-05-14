@@ -72,14 +72,5 @@ describe('tab-container', function() {
       assert.equal(document.activeElement, tabs[0])
       assert.equal(counter, 2)
     })
-
-    it('selectTab(index) works', function() {
-      const tabContainer = document.querySelector('tab-container')
-      const panels = document.querySelectorAll('[role="tabpanel"]')
-
-      tabContainer.selectTab(2)
-      assert(panels[0].hidden)
-      assert(!panels[2].hidden)
-    })
   })
 })
