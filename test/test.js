@@ -72,5 +72,26 @@ describe('tab-container', function() {
       assert.equal(document.activeElement, tabs[0])
       assert.equal(counter, 2)
     })
+
+    it('click works and a cancellable `tab-container-change` event is dispatched', function() {
+      const tabContainer = document.querySelector('tab-container')
+      const tabs = document.querySelectorAll('button')
+      const panels = document.querySelectorAll('[role="tabpanel"]')
+      let counter = 0
+      tabContainer.addEventListener('tab-container-change', event => {
+        counter++
+        assert.equal(event.detail.relatedTarget, panels[1])
+        event.preventDefault()
+      })
+
+      tabs[1].click()
+
+      // Since we prevented the event, nothing should have changed.
+      assert(!panels[0].hidden)
+      assert(panels[1].hidden)
+
+      // The event listener should have been called.
+      assert.equal(counter, 1)
+    })
   })
 })

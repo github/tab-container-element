@@ -45,6 +45,18 @@ function selectTab(tabContainer: TabContainerElement, index: number) {
   const tabs = tabContainer.querySelectorAll('[role="tablist"] [role="tab"]')
   const panels = tabContainer.querySelectorAll('[role="tabpanel"]')
 
+  const selectedTab = tabs[index]
+  const selectedPanel = panels[index]
+
+  const cancelled = !tabContainer.dispatchEvent(
+    new CustomEvent('tab-container-change', {
+      bubbles: true,
+      cancelable: true,
+      detail: {relatedTarget: selectedPanel}
+    })
+  )
+  if (cancelled) return
+
   for (const tab of tabs) {
     tab.setAttribute('aria-selected', 'false')
     tab.setAttribute('tabindex', '-1')
@@ -54,18 +66,15 @@ function selectTab(tabContainer: TabContainerElement, index: number) {
     panel.setAttribute('tabindex', '0')
   }
 
-  const tab = tabs[index]
-  const panel = panels[index]
-
-  tab.setAttribute('aria-selected', 'true')
-  tab.removeAttribute('tabindex')
-  tab.focus()
-  panel.hidden = false
+  selectedTab.setAttribute('aria-selected', 'true')
+  selectedTab.removeAttribute('tabindex')
+  selectedTab.focus()
+  selectedPanel.hidden = false
 
   tabContainer.dispatchEvent(
     new CustomEvent('tab-container-changed', {
       bubbles: true,
-      detail: {relatedTarget: panel}
+      detail: {relatedTarget: selectedPanel}
     })
   )
 }
