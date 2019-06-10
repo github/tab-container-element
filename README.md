@@ -35,7 +35,7 @@ import '@github/tab-container-element'
 
 ### Events
 
-- `tab-container-change` (bubbles): fired on `<tab-container>` after a new tab is selected and visibility is updated. `event.detail.relatedTarget` is the newly visible tab panel.
+- `tab-container-changed` (bubbles): fired on `<tab-container>` after a new tab is selected and visibility is updated. `event.detail.relatedTarget` is the newly visible tab panel.
 
 ## Browser support
 

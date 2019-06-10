@@ -37,12 +37,12 @@ describe('tab-container', function() {
       document.body.innerHTML = ''
     })
 
-    it('click works and event is dispatched', function() {
+    it('click works and `tab-container-changed` event is dispatched', function() {
       const tabContainer = document.querySelector('tab-container')
       const tabs = document.querySelectorAll('button')
       const panels = document.querySelectorAll('[role="tabpanel"]')
       let counter = 0
-      tabContainer.addEventListener('tab-container-change', event => {
+      tabContainer.addEventListener('tab-container-changed', event => {
         counter++
         assert.equal(event.detail.relatedTarget, panels[1])
       })
@@ -54,12 +54,12 @@ describe('tab-container', function() {
       assert.equal(document.activeElement, tabs[1])
     })
 
-    it('keyboard shortcuts work and events are dispatched', function() {
+    it('keyboard shortcuts work and `tab-container-changed` events are dispatched', function() {
       const tabContainer = document.querySelector('tab-container')
       const tabs = document.querySelectorAll('button')
       const panels = document.querySelectorAll('[role="tabpanel"]')
       let counter = 0
-      tabContainer.addEventListener('tab-container-change', () => counter++)
+      tabContainer.addEventListener('tab-container-changed', () => counter++)
 
       tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowLeft', bubbles: true}))
       assert(panels[0].hidden)

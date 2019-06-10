@@ -63,7 +63,7 @@ function selectTab(tabContainer: TabContainerElement, index: number) {
   panel.hidden = false
 
   tabContainer.dispatchEvent(
-    new CustomEvent('tab-container-change', {
+    new CustomEvent('tab-container-changed', {
       bubbles: true,
       detail: {relatedTarget: panel}
     })
