@@ -1,6 +1,6 @@
 /* @flow strict */
 
-class TabContainerElement extends HTMLElement {
+export default class TabContainerElement extends HTMLElement {
   constructor() {
     super()
 
