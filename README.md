@@ -18,8 +18,8 @@ import '@github/tab-container-element'
 <tab-container>
   <div role="tablist">
     <button type="button" role="tab" aria-selected="true">Tab one</button>
-    <button type="button" role="tab">Tab two</button>
-    <button type="button" role="tab">Tab three</button>
+    <button type="button" role="tab" tabindex="-1">Tab two</button>
+    <button type="button" role="tab" tabindex="-1">Tab three</button>
   </div>
   <div role="tabpanel">
     Panel 1
