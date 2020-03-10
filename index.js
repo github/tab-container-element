@@ -4,15 +4,6 @@ export default class TabContainerElement extends HTMLElement {
   constructor() {
     super()
 
-    for (const tab of this.querySelectorAll('[role="tablist"] [role="tab"]')) {
-      if (!tab.hasAttribute('aria-selected')) {
-        tab.setAttribute('aria-selected', 'false')
-      }
-      if (!tab.hasAttribute('tabindex')) {
-        tab.setAttribute('tabindex', '-1')
-      }
-    }
-
     this.addEventListener('keydown', (event: KeyboardEvent) => {
       const target = event.target
       if (!(target instanceof HTMLElement)) return
@@ -47,6 +38,17 @@ export default class TabContainerElement extends HTMLElement {
       const index = tabs.indexOf(tab)
       selectTab(this, index)
     })
+  }
+
+  connectedCallback() {
+    for (const tab of this.querySelectorAll('[role="tablist"] [role="tab"]')) {
+      if (!tab.hasAttribute('aria-selected')) {
+        tab.setAttribute('aria-selected', 'false')
+      }
+      if (!tab.hasAttribute('tabindex')) {
+        tab.setAttribute('tabindex', '-1')
+      }
+    }
   }
 }
 
