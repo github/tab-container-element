@@ -78,7 +78,7 @@ function selectTab(tabContainer: TabContainerElement, index: number) {
   }
 
   selectedTab.setAttribute('aria-selected', 'true')
-  selectedTab.removeAttribute('tabindex')
+  selectedTab.setAttribute('tabindex', '0')
   selectedTab.focus()
   selectedPanel.hidden = false
 
