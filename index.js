@@ -46,7 +46,11 @@ export default class TabContainerElement extends HTMLElement {
         tab.setAttribute('aria-selected', 'false')
       }
       if (!tab.hasAttribute('tabindex')) {
-        tab.setAttribute('tabindex', '-1')
+        if (tab.getAttribute('aria-selected') === 'true') {
+          tab.setAttribute('tabindex', '0')
+        } else {
+          tab.setAttribute('tabindex', '-1')
+        }
       }
     }
   }
