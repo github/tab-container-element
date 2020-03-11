@@ -63,7 +63,7 @@ function selectTab(tabContainer: TabContainerElement, index: number) {
   }
   for (const panel of panels) {
     panel.hidden = true
-    if (!panel.hasAttribute('data-tab-container-no-tabstop')) {
+    if (!panel.hasAttribute('tabindex') && !panel.hasAttribute('data-tab-container-no-tabstop')) {
       panel.setAttribute('tabindex', '0')
     }
   }
