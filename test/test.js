@@ -114,6 +114,7 @@ describe('tab-container', function() {
 
       tabs[1].click()
       assert.equal(tabs[1].getAttribute('tabindex'), '0')
+      assert.equal(tabs[0].getAttribute('tabindex'), '-1')
     })
   })
 })
