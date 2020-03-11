@@ -104,5 +104,28 @@ describe('tab-container', function() {
       assert.equal(panels[1].getAttribute('tabindex'), '0')
       assert(!panels[2].hasAttribute('tabindex'))
     })
+
+    it('the aria-selected attribute is set to "false" for all tabs that don\'t have a aria-selected attribute', function() {
+      for (const tab of document.querySelectorAll('[role="tab"]:not([aria-selected="true"])')) {
+        assert.equal(tab.getAttribute('aria-selected'), 'false')
+      }
+    })
+
+    it('the tabindex attribute is set to "0" for the selected tab', function() {
+      assert.equal(document.querySelector('[role="tab"][aria-selected="true"]').getAttribute('tabindex'), '0')
+    })
+
+    it('the tabindex attribute is set to "-1" for the non-selected tabs', function() {
+      for (const tab of document.querySelectorAll('[role="tab"]:not([aria-selected="true"])')) {
+        assert.equal(tab.getAttribute('tabindex'), '-1')
+      }
+    })
+    it('selected tab has tabindex="0" after selection', function() {
+      const tabs = document.querySelectorAll('[role="tab"]')
+
+      tabs[1].click()
+      assert.equal(tabs[1].getAttribute('tabindex'), '0')
+      assert.equal(tabs[0].getAttribute('tabindex'), '-1')
+    })
   })
 })

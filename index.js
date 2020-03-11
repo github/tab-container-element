@@ -39,6 +39,21 @@ export default class TabContainerElement extends HTMLElement {
       selectTab(this, index)
     })
   }
+
+  connectedCallback() {
+    for (const tab of this.querySelectorAll('[role="tablist"] [role="tab"]')) {
+      if (!tab.hasAttribute('aria-selected')) {
+        tab.setAttribute('aria-selected', 'false')
+      }
+      if (!tab.hasAttribute('tabindex')) {
+        if (tab.getAttribute('aria-selected') === 'true') {
+          tab.setAttribute('tabindex', '0')
+        } else {
+          tab.setAttribute('tabindex', '-1')
+        }
+      }
+    }
+  }
 }
 
 function selectTab(tabContainer: TabContainerElement, index: number) {
@@ -69,7 +84,7 @@ function selectTab(tabContainer: TabContainerElement, index: number) {
   }
 
   selectedTab.setAttribute('aria-selected', 'true')
-  selectedTab.removeAttribute('tabindex')
+  selectedTab.setAttribute('tabindex', '0')
   selectedTab.focus()
   selectedPanel.hidden = false
 
