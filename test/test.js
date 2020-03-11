@@ -26,7 +26,7 @@ describe('tab-container', function() {
         <div role="tabpanel" hidden>
           Panel 2
         </div>
-        <div role="tabpanel" hidden>
+        <div role="tabpanel" hidden data-tab-container-no-tabstop>
           Panel 3
         </div>
       </tab-container>
@@ -92,6 +92,17 @@ describe('tab-container', function() {
 
       // The event listener should have been called.
       assert.equal(counter, 1)
+    })
+
+    it("panels that don't have a `data-tab-container-no-tabstop` attribute have tabindex with value '0'", function() {
+      const tabs = document.querySelectorAll('button')
+      const panels = document.querySelectorAll('[role="tabpanel"]')
+
+      tabs[1].click()
+
+      assert.equal(panels[0].getAttribute('tabindex'), '0')
+      assert.equal(panels[1].getAttribute('tabindex'), '0')
+      assert(!panels[2].hasAttribute('tabindex'))
     })
 
     it('the aria-selected attribute is set to "false" for all tabs that don\'t have a aria-selected attribute', function() {

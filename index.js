@@ -78,7 +78,9 @@ function selectTab(tabContainer: TabContainerElement, index: number) {
   }
   for (const panel of panels) {
     panel.hidden = true
-    panel.setAttribute('tabindex', '0')
+    if (!panel.hasAttribute('tabindex') && !panel.hasAttribute('data-tab-container-no-tabstop')) {
+      panel.setAttribute('tabindex', '0')
+    }
   }
 
   selectedTab.setAttribute('aria-selected', 'true')
