@@ -17,16 +17,16 @@ export default class TabContainerElement extends HTMLElement {
       if (event.code === 'ArrowRight') {
         let index = currentIndex + 1
         if (index >= tabs.length) index = 0
-        selectTab(this, index)
+        selectTab(this, index, event)
       } else if (event.code === 'ArrowLeft') {
         let index = currentIndex - 1
         if (index < 0) index = tabs.length - 1
-        selectTab(this, index)
+        selectTab(this, index, event)
       } else if (event.code === 'Home') {
-        selectTab(this, 0)
+        selectTab(this, 0, event)
         event.preventDefault()
       } else if (event.code === 'End') {
-        selectTab(this, tabs.length - 1)
+        selectTab(this, tabs.length - 1, event)
         event.preventDefault()
       }
     })
@@ -39,7 +39,7 @@ export default class TabContainerElement extends HTMLElement {
       if (!tab || !tab.closest('[role="tablist"]')) return
 
       const index = tabs.indexOf(tab)
-      selectTab(this, index)
+      selectTab(this, index, event)
     })
   }
 
@@ -59,7 +59,7 @@ export default class TabContainerElement extends HTMLElement {
   }
 }
 
-function selectTab(tabContainer: TabContainerElement, index: number) {
+function selectTab(tabContainer: TabContainerElement, index: number, originalEvent: MouseEvent | KeyboardEvent) {
   const tabs = tabContainer.querySelectorAll<HTMLElement>('[role="tablist"] [role="tab"]')
   const panels = tabContainer.querySelectorAll<HTMLElement>('[role="tabpanel"]')
 
@@ -94,7 +94,7 @@ function selectTab(tabContainer: TabContainerElement, index: number) {
   tabContainer.dispatchEvent(
     new CustomEvent('tab-container-changed', {
       bubbles: true,
-      detail: {relatedTarget: selectedPanel}
+      detail: {relatedTarget: selectedPanel, originalEvent}
     })
   )
 }

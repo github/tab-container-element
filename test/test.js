@@ -127,5 +127,25 @@ describe('tab-container', function() {
       assert.equal(tabs[1].getAttribute('tabindex'), '0')
       assert.equal(tabs[0].getAttribute('tabindex'), '-1')
     })
+
+    it('clicking a tab dispatches a MouseEvent', function(done) {
+      const tabContainer = document.querySelector('tab-container')
+      const tabs = document.querySelectorAll('button')
+      tabContainer.addEventListener('tab-container-changed', event => {
+        done(assert.instanceOf(event.detail.originalEvent, MouseEvent))
+      })
+
+      tabs[1].click()
+    })
+
+    it('selecting a with the keyboard dispatches a KeyboardEvent', function(done) {
+      const tabContainer = document.querySelector('tab-container')
+      const tabs = document.querySelectorAll('button')
+      tabContainer.addEventListener('tab-container-changed', event => {
+        done(assert.instanceOf(event.detail.originalEvent, KeyboardEvent))
+      })
+
+      tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowLeft', bubbles: true}))
+    })
   })
 })
