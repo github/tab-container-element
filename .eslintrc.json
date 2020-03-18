@@ -1,15 +1,21 @@
 {
+  "parser": "@typescript-eslint/parser",
   "extends": [
     "plugin:github/es6",
     "plugin:github/browser",
-    "plugin:github/flow"
+    "plugin:github/typescript"
   ],
-  "parser": "babel-eslint",
+  "globals": {
+    "TabContainerElement": "readable"
+  },
+  "rules": {
+    "@typescript-eslint/no-non-null-assertion": "off"
+  },
   "overrides": [
     {
-      "files": "test/**/*.js",
+      "files": ["test/**/*.js", "prettier.config.js"],
+      "parser": "espree",
       "rules": {
-        "flowtype/require-valid-file-annotation": "off",
         "github/unescaped-html-literal": "off"
       }
     }

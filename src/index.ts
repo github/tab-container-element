@@ -1,5 +1,3 @@
-/* @flow strict */
-
 export default class TabContainerElement extends HTMLElement {
   constructor() {
     super()
@@ -9,7 +7,7 @@ export default class TabContainerElement extends HTMLElement {
       if (!(target instanceof HTMLElement)) return
       if (target.getAttribute('role') !== 'tab' && !target.closest('[role="tablist"]')) return
       const tabs = Array.from(this.querySelectorAll('[role="tablist"] [role="tab"]'))
-      const currentIndex = tabs.indexOf(tabs.find(tab => tab.matches('[aria-selected="true"]')))
+      const currentIndex = tabs.indexOf(tabs.find(tab => tab.matches('[aria-selected="true"]'))!)
 
       if (event.code === 'ArrowRight') {
         let index = currentIndex + 1
@@ -57,8 +55,8 @@ export default class TabContainerElement extends HTMLElement {
 }
 
 function selectTab(tabContainer: TabContainerElement, index: number) {
-  const tabs = tabContainer.querySelectorAll('[role="tablist"] [role="tab"]')
-  const panels = tabContainer.querySelectorAll('[role="tabpanel"]')
+  const tabs = tabContainer.querySelectorAll<HTMLElement>('[role="tablist"] [role="tab"]')
+  const panels = tabContainer.querySelectorAll<HTMLElement>('[role="tabpanel"]')
 
   const selectedTab = tabs[index]
   const selectedPanel = panels[index]
@@ -94,6 +92,12 @@ function selectTab(tabContainer: TabContainerElement, index: number) {
       detail: {relatedTarget: selectedPanel}
     })
   )
+}
+
+declare global {
+  interface Window {
+    TabContainerElement: typeof TabContainerElement
+  }
 }
 
 if (!window.customElements.get('tab-container')) {
