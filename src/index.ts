@@ -1,7 +1,3 @@
-/* eslint eslint-comments/no-use: off */
-/* global TabContainerElement */
-// https://github.com/typescript-eslint/typescript-eslint/issues/131
-
 export default class TabContainerElement extends HTMLElement {
   constructor() {
     super()

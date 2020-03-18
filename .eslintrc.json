@@ -5,6 +5,9 @@
     "plugin:github/browser",
     "plugin:github/typescript"
   ],
+  "globals": {
+    "TabContainerElement": "readable"
+  },
   "overrides": [
     {
       "files": ["test/**/*.js", "prettier.config.js"],
