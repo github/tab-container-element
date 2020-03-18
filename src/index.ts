@@ -7,7 +7,6 @@ export default class TabContainerElement extends HTMLElement {
       if (!(target instanceof HTMLElement)) return
       if (target.getAttribute('role') !== 'tab' && !target.closest('[role="tablist"]')) return
       const tabs = Array.from(this.querySelectorAll('[role="tablist"] [role="tab"]'))
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const currentIndex = tabs.indexOf(tabs.find(tab => tab.matches('[aria-selected="true"]'))!)
 
       if (event.code === 'ArrowRight') {

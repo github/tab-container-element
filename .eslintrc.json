@@ -8,6 +8,9 @@
   "globals": {
     "TabContainerElement": "readable"
   },
+  "rules": {
+    "@typescript-eslint/no-non-null-assertion": "off"
+  },
   "overrides": [
     {
       "files": ["test/**/*.js", "prettier.config.js"],
