@@ -38,7 +38,7 @@ export default class TabContainerElement extends HTMLElement {
     })
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     for (const tab of this.querySelectorAll('[role="tablist"] [role="tab"]')) {
       if (!tab.hasAttribute('aria-selected')) {
         tab.setAttribute('aria-selected', 'false')

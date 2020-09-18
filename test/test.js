@@ -1,18 +1,18 @@
-describe('tab-container', function() {
-  describe('element creation', function() {
-    it('creates from document.createElement', function() {
+describe('tab-container', function () {
+  describe('element creation', function () {
+    it('creates from document.createElement', function () {
       const el = document.createElement('tab-container')
       assert.equal('TAB-CONTAINER', el.nodeName)
     })
 
-    it('creates from constructor', function() {
+    it('creates from constructor', function () {
       const el = new window.TabContainerElement()
       assert.equal('TAB-CONTAINER', el.nodeName)
     })
   })
 
-  describe('after tree insertion', function() {
-    beforeEach(function() {
+  describe('after tree insertion', function () {
+    beforeEach(function () {
       document.body.innerHTML = `
       <tab-container>
         <div role="tablist">
@@ -33,11 +33,11 @@ describe('tab-container', function() {
       `
     })
 
-    afterEach(function() {
+    afterEach(function () {
       document.body.innerHTML = ''
     })
 
-    it('click works and `tab-container-changed` event is dispatched', function() {
+    it('click works and `tab-container-changed` event is dispatched', function () {
       const tabContainer = document.querySelector('tab-container')
       const tabs = document.querySelectorAll('button')
       const panels = document.querySelectorAll('[role="tabpanel"]')
@@ -54,7 +54,7 @@ describe('tab-container', function() {
       assert.equal(document.activeElement, tabs[1])
     })
 
-    it('keyboard shortcuts work and `tab-container-changed` events are dispatched', function() {
+    it('keyboard shortcuts work and `tab-container-changed` events are dispatched', function () {
       const tabContainer = document.querySelector('tab-container')
       const tabs = document.querySelectorAll('button')
       const panels = document.querySelectorAll('[role="tabpanel"]')
@@ -73,7 +73,7 @@ describe('tab-container', function() {
       assert.equal(counter, 2)
     })
 
-    it('click works and a cancellable `tab-container-change` event is dispatched', function() {
+    it('click works and a cancellable `tab-container-change` event is dispatched', function () {
       const tabContainer = document.querySelector('tab-container')
       const tabs = document.querySelectorAll('button')
       const panels = document.querySelectorAll('[role="tabpanel"]')
@@ -94,7 +94,7 @@ describe('tab-container', function() {
       assert.equal(counter, 1)
     })
 
-    it("panels that don't have a `data-tab-container-no-tabstop` attribute have tabindex with value '0'", function() {
+    it("panels that don't have a `data-tab-container-no-tabstop` attribute have tabindex with value '0'", function () {
       const tabs = document.querySelectorAll('button')
       const panels = document.querySelectorAll('[role="tabpanel"]')
 
@@ -105,22 +105,22 @@ describe('tab-container', function() {
       assert(!panels[2].hasAttribute('tabindex'))
     })
 
-    it('the aria-selected attribute is set to "false" for all tabs that don\'t have a aria-selected attribute', function() {
+    it('the aria-selected attribute is set to "false" for all tabs that don\'t have a aria-selected attribute', function () {
       for (const tab of document.querySelectorAll('[role="tab"]:not([aria-selected="true"])')) {
         assert.equal(tab.getAttribute('aria-selected'), 'false')
       }
     })
 
-    it('the tabindex attribute is set to "0" for the selected tab', function() {
+    it('the tabindex attribute is set to "0" for the selected tab', function () {
       assert.equal(document.querySelector('[role="tab"][aria-selected="true"]').getAttribute('tabindex'), '0')
     })
 
-    it('the tabindex attribute is set to "-1" for the non-selected tabs', function() {
+    it('the tabindex attribute is set to "-1" for the non-selected tabs', function () {
       for (const tab of document.querySelectorAll('[role="tab"]:not([aria-selected="true"])')) {
         assert.equal(tab.getAttribute('tabindex'), '-1')
       }
     })
-    it('selected tab has tabindex="0" after selection', function() {
+    it('selected tab has tabindex="0" after selection', function () {
       const tabs = document.querySelectorAll('[role="tab"]')
 
       tabs[1].click()

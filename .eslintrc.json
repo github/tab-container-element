@@ -1,8 +1,8 @@
 {
   "parser": "@typescript-eslint/parser",
   "extends": [
-    "plugin:github/es6",
     "plugin:github/browser",
+    "plugin:github/recommended",
     "plugin:github/typescript"
   ],
   "globals": {
