@@ -128,4 +128,76 @@ describe('tab-container', function () {
       assert.equal(tabs[0].getAttribute('tabindex'), '-1')
     })
   })
+
+  describe('nesting', function () {
+    beforeEach(function () {
+      document.body.innerHTML = `
+      <tab-container class="test-top">
+        <div role="tablist" >
+          <button type="button" role="tab" aria-selected="true">Tab one</button>
+          <button type="button" role="tab">Tab two</button>
+          <button type="button" role="tab">Tab three</button>
+        </div>
+        <div role="tabpanel">
+          <tab-container class="test-nested">
+            <div role="tablist">
+              <button type="button" role="tab" aria-selected="true">Nested Tab one</button>
+              <button type="button" role="tab">Nested Tab two</button>
+            </div>
+            <div role="tabpanel">Nested Panel 1</div>
+            <div role="tabpanel" hidden>Nested Panel 2</div>
+          </tab-container>
+        </div>
+        <div role="tabpanel" hidden>
+          Panel 2
+        </div>
+        <div role="tabpanel" hidden data-tab-container-no-tabstop>
+          Panel 3
+        </div>
+      </tab-container>
+      `
+    })
+
+    it('only switches closest tab-containers on click', () => {
+      const tabs = Array.from(document.querySelectorAll('.test-top > [role="tablist"] [role="tab"]'))
+      const nestedTabs = Array.from(document.querySelectorAll('.test-nested > [role="tablist"] > [role="tab"]'))
+      const panels = Array.from(document.querySelectorAll('.test-top > [role="tabpanel"]'))
+      const nestedPanels = Array.from(document.querySelectorAll('.test-nested > [role="tabpanel"]'))
+      const isSelected = e => e.matches('[aria-selected=true]')
+      const isHidden = e => e.hidden
+
+      assert.deepStrictEqual(tabs.map(isSelected), [true, false, false])
+      assert.deepStrictEqual(nestedTabs.map(isSelected), [true, false])
+      assert.deepStrictEqual(panels.map(isHidden), [false, true, true])
+      assert.deepStrictEqual(nestedPanels.map(isHidden), [false, true])
+
+      nestedTabs[1].click()
+
+      assert.deepStrictEqual(tabs.map(isSelected), [true, false, false], 'top tabs changed state')
+      assert.deepStrictEqual(nestedTabs.map(isSelected), [false, true], 'nested tabs did change state')
+      assert.deepStrictEqual(panels.map(isHidden), [false, true, true], 'top panels changed state')
+      assert.deepStrictEqual(nestedPanels.map(isHidden), [true, false], 'nested panels did not change state')
+    })
+
+    it('only switches closest tab-containers on arrow', () => {
+      const tabs = Array.from(document.querySelectorAll('.test-top > [role="tablist"] [role="tab"]'))
+      const nestedTabs = Array.from(document.querySelectorAll('.test-nested > [role="tablist"] > [role="tab"]'))
+      const panels = Array.from(document.querySelectorAll('.test-top > [role="tabpanel"]'))
+      const nestedPanels = Array.from(document.querySelectorAll('.test-nested > [role="tabpanel"]'))
+      const isSelected = e => e.matches('[aria-selected=true]')
+      const isHidden = e => e.hidden
+
+      assert.deepStrictEqual(tabs.map(isSelected), [true, false, false])
+      assert.deepStrictEqual(nestedTabs.map(isSelected), [true, false])
+      assert.deepStrictEqual(panels.map(isHidden), [false, true, true])
+      assert.deepStrictEqual(nestedPanels.map(isHidden), [false, true])
+
+      nestedTabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowLeft', bubbles: true}))
+
+      assert.deepStrictEqual(tabs.map(isSelected), [true, false, false], 'top tabs changed state')
+      assert.deepStrictEqual(nestedTabs.map(isSelected), [false, true], 'nested tabs did change state')
+      assert.deepStrictEqual(panels.map(isHidden), [false, true, true], 'top panels changed state')
+      assert.deepStrictEqual(nestedPanels.map(isHidden), [true, false], 'nested panels did not change state')
+    })
+  })
 })

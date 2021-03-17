@@ -5,6 +5,7 @@ export default class TabContainerElement extends HTMLElement {
     this.addEventListener('keydown', (event: KeyboardEvent) => {
       const target = event.target
       if (!(target instanceof HTMLElement)) return
+      if (target.closest(this.tagName) !== this) return
       if (target.getAttribute('role') !== 'tab' && !target.closest('[role="tablist"]')) return
       const tabs = Array.from(this.querySelectorAll('[role="tablist"] [role="tab"]'))
       const currentIndex = tabs.indexOf(tabs.find(tab => tab.matches('[aria-selected="true"]'))!)
@@ -30,6 +31,8 @@ export default class TabContainerElement extends HTMLElement {
       const tabs = Array.from(this.querySelectorAll('[role="tablist"] [role="tab"]'))
 
       if (!(event.target instanceof Element)) return
+      if (event.target.closest(this.tagName) !== this) return
+
       const tab = event.target.closest('[role="tab"]')
       if (!tab || !tab.closest('[role="tablist"]')) return
 
