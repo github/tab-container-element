@@ -7,7 +7,9 @@ export default class TabContainerElement extends HTMLElement {
       if (!(target instanceof HTMLElement)) return
       if (target.closest(this.tagName) !== this) return
       if (target.getAttribute('role') !== 'tab' && !target.closest('[role="tablist"]')) return
-      const tabs = Array.from(this.querySelectorAll('[role="tablist"] [role="tab"]')).filter(tab => tab.closest(this.tagName) === this)
+      const tabs = Array.from(this.querySelectorAll('[role="tablist"] [role="tab"]')).filter(
+        tab => tab.closest(this.tagName) === this
+      )
       const currentIndex = tabs.indexOf(tabs.find(tab => tab.matches('[aria-selected="true"]'))!)
 
       if (event.code === 'ArrowRight') {
@@ -58,8 +60,12 @@ export default class TabContainerElement extends HTMLElement {
 }
 
 function selectTab(tabContainer: TabContainerElement, index: number) {
-  const tabs = Array.from(tabContainer.querySelectorAll<HTMLElement>('[role="tablist"] [role="tab"]')).filter(tab => tab.closest(tabContainer.tagName) === tabContainer)
-  const panels = Array.from(tabContainer.querySelectorAll<HTMLElement>('[role="tabpanel"]')).filter(panel => panel.closest(tabContainer.tagName) === tabContainer)
+  const tabs = Array.from(tabContainer.querySelectorAll<HTMLElement>('[role="tablist"] [role="tab"]')).filter(
+    tab => tab.closest(tabContainer.tagName) === tabContainer
+  )
+  const panels = Array.from(tabContainer.querySelectorAll<HTMLElement>('[role="tabpanel"]')).filter(
+    panel => panel.closest(tabContainer.tagName) === tabContainer
+  )
 
   const selectedTab = tabs[index]
   const selectedPanel = panels[index]
