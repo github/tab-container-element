@@ -177,6 +177,10 @@ describe('tab-container', function () {
       assert.deepStrictEqual(nestedTabs.map(isSelected), [false, true], 'nested tabs did change state')
       assert.deepStrictEqual(panels.map(isHidden), [false, true, true], 'top panels changed state')
       assert.deepStrictEqual(nestedPanels.map(isHidden), [true, false], 'nested panels did not change state')
+
+      tabs[1].click()
+
+      assert.deepStrictEqual(nestedPanels.map(isHidden), [true, false], 'nested panels did change state')
     })
 
     it('only switches closest tab-containers on arrow', () => {
@@ -198,6 +202,19 @@ describe('tab-container', function () {
       assert.deepStrictEqual(nestedTabs.map(isSelected), [false, true], 'nested tabs did change state')
       assert.deepStrictEqual(panels.map(isHidden), [false, true, true], 'top panels changed state')
       assert.deepStrictEqual(nestedPanels.map(isHidden), [true, false], 'nested panels did not change state')
+
+      tabs[1].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowLeft', bubbles: true}))
+
+      assert.deepStrictEqual(
+        nestedPanels.map(isHidden),
+        [true, false],
+        'nested panels changed state when top panel changed'
+      )
+      assert.deepStrictEqual(
+        nestedTabs.map(isSelected),
+        [false, true],
+        'nested tabs changed state when top panel changed'
+      )
     })
   })
 })
