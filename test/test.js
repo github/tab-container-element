@@ -13,6 +13,7 @@ describe('tab-container', function () {
 
   describe('after tree insertion', function () {
     beforeEach(function () {
+      // eslint-disable-next-line github/no-inner-html
       document.body.innerHTML = `
       <tab-container>
         <div role="tablist">
@@ -131,6 +132,7 @@ describe('tab-container', function () {
 
   describe('nesting', function () {
     beforeEach(function () {
+      // eslint-disable-next-line github/no-inner-html
       document.body.innerHTML = `
       <tab-container class="test-top">
         <div role="tablist" >

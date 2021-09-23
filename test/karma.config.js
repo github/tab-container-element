@@ -1,3 +1,4 @@
+// eslint-disable-next-line filenames/match-regex, import/no-commonjs
 module.exports = function (config) {
   config.set({
     frameworks: ['mocha', 'chai'],
