@@ -1,5 +1,5 @@
 // eslint-disable-next-line filenames/match-regex, import/no-commonjs, @typescript-eslint/no-var-requires
-process.env.CHROME_BIN = require('puppeteer').executablePath()
+process.env.CHROME_BIN = require('playwright').chromium.executablePath()
 
 // eslint-disable-next-line import/no-commonjs
 module.exports = function (config) {
