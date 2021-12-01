@@ -1,4 +1,7 @@
-// eslint-disable-next-line filenames/match-regex, import/no-commonjs
+// eslint-disable-next-line filenames/match-regex, import/no-commonjs, @typescript-eslint/no-var-requires
+process.env.CHROME_BIN = require('playwright').chromium.executablePath()
+
+// eslint-disable-next-line import/no-commonjs
 module.exports = function (config) {
   config.set({
     frameworks: ['mocha', 'chai'],
