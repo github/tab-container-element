@@ -75,7 +75,7 @@ describe('tab-container', function () {
       assert.equal(counter, 2)
     })
 
-    it('does not support down and up keyboard shortcuts', () => {
+    it('down and up keyboard shortcuts do not work and `tab-container-changed` events are not dispatched', () => {
       const tabContainer = document.querySelector('tab-container')
       const tabs = document.querySelectorAll('button')
       const panels = document.querySelectorAll('[role="tabpanel"]')
@@ -86,14 +86,14 @@ describe('tab-container', function () {
       assert(!panels[0].hidden)
       assert(panels[1].hidden)
       assert(panels[2].hidden)
-      assert.equal(document.activeElement, tabs[0])
+      assert.equal(document.activeElement, document.body)
       assert.equal(counter, 0)
 
       tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowUp', bubbles: true}))
       assert(!panels[0].hidden)
       assert(panels[1].hidden)
       assert(panels[2].hidden)
-      assert.equal(document.activeElement, tabs[0])
+      assert.equal(document.activeElement, document.body)
       assert.equal(counter, 0)
     })
 
@@ -266,7 +266,7 @@ describe('tab-container', function () {
       `
     })
 
-    it('supports up and down keyboard shortcuts', () => {
+    it('up and down keyboard shortcuts work and `tab-container-changed` events are dispatched', () => {
       const tabContainer = document.querySelector('tab-container')
       const tabs = document.querySelectorAll('button')
       const panels = document.querySelectorAll('[role="tabpanel"]')
@@ -282,23 +282,22 @@ describe('tab-container', function () {
       assert(!panels[0].hidden)
       assert(panels[2].hidden)
       assert.equal(document.activeElement, tabs[0])
-      assert.equal(counter, 2)
 
       tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowDown', bubbles: true}))
       assert(panels[0].hidden)
       assert(!panels[1].hidden)
       assert(panels[2].hidden)
-      assert.equal(document.activeElement, panels[1])
+      assert.equal(document.activeElement, tabs[1])
 
       tabs[1].dispatchEvent(new KeyboardEvent('keydown', {code: 'End', bubbles: true}))
       assert(panels[0].hidden)
       assert(panels[1].hidden)
       assert(!panels[2].hidden)
       assert.equal(document.activeElement, tabs[2])
-      assert.equal(counter, 2)
+      assert.equal(counter, 4)
     })
 
-    it('supports left and right keyboard shortcuts', () => {
+    it('left and right keyboard shortcuts work and `tab-container-changed` events are dispatched', () => {
       const tabContainer = document.querySelector('tab-container')
       const tabs = document.querySelectorAll('button')
       const panels = document.querySelectorAll('[role="tabpanel"]')
@@ -314,20 +313,19 @@ describe('tab-container', function () {
       assert(!panels[0].hidden)
       assert(panels[2].hidden)
       assert.equal(document.activeElement, tabs[0])
-      assert.equal(counter, 2)
 
       tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowRight', bubbles: true}))
       assert(panels[0].hidden)
       assert(!panels[1].hidden)
       assert(panels[2].hidden)
-      assert.equal(document.activeElement, panels[1])
+      assert.equal(document.activeElement, tabs[1])
 
       tabs[1].dispatchEvent(new KeyboardEvent('keydown', {code: 'End', bubbles: true}))
       assert(panels[0].hidden)
       assert(panels[1].hidden)
       assert(!panels[2].hidden)
       assert.equal(document.activeElement, tabs[2])
-      assert.equal(counter, 2)
+      assert.equal(counter, 4)
     })
   })
 })
