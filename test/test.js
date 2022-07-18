@@ -275,7 +275,7 @@ describe('tab-container', function () {
       assert.equal(counter, 2)
     })
 
-    it('does not supports left and right keyboard shortcuts', () => {
+    it('does not support left and right keyboard shortcuts', () => {
       const tabContainer = document.querySelector('tab-container')
       const tabs = document.querySelectorAll('button')
       const panels = document.querySelectorAll('[role="tabpanel"]')
