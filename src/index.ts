@@ -1,6 +1,5 @@
 type IncrementKey = 'ArrowRight' | 'ArrowDown'
 type DecrementKey = 'ArrowUp' | 'ArrowLeft'
-type NavigationDirection = [IncrementKey, DecrementKey]
 
 function getTabs(el: TabContainerElement): HTMLElement[] {
   return Array.from(el.querySelectorAll<HTMLElement>('[role="tablist"] [role="tab"]')).filter(
@@ -8,7 +7,7 @@ function getTabs(el: TabContainerElement): HTMLElement[] {
   )
 }
 
-function getNavigationKeys(vertical: boolean): NavigationDirection {
+function getNavigationKeys(vertical: boolean): [IncrementKey, DecrementKey] {
   if (vertical) {
     return ['ArrowDown', 'ArrowUp']
   } else {
