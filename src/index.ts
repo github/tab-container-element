@@ -27,7 +27,7 @@ export default class TabContainerElement extends HTMLElement {
       const tabs = getTabs(this)
       const currentIndex = tabs.indexOf(tabs.find(tab => tab.matches('[aria-selected="true"]'))!)
       const [incrementKey, decrementKey] = getNavigationKeys(
-        !!(target.closest('[role="tablist"]')?.getAttribute('aria-orientation') === 'vertical')
+        target.closest('[role="tablist"]')?.getAttribute('aria-orientation') === 'vertical'
       )
 
       if (event.code === incrementKey) {
