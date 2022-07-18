@@ -1,7 +1,19 @@
+type IncrementKey = 'ArrowRight' | 'ArrowDown'
+type DecrementKey = 'ArrowUp' | 'ArrowLeft'
+type NavigationDirection = [IncrementKey, DecrementKey]
+
 function getTabs(el: TabContainerElement): HTMLElement[] {
   return Array.from(el.querySelectorAll<HTMLElement>('[role="tablist"] [role="tab"]')).filter(
     tab => tab instanceof HTMLElement && tab.closest(el.tagName) === el
   )
+}
+
+function getNavigationKeys(vertical: boolean): NavigationDirection {
+  if (vertical) {
+    return ['ArrowDown', 'ArrowUp']
+  } else {
+    return ['ArrowRight', 'ArrowLeft']
+  }
 }
 
 export default class TabContainerElement extends HTMLElement {
@@ -15,12 +27,15 @@ export default class TabContainerElement extends HTMLElement {
       if (target.getAttribute('role') !== 'tab' && !target.closest('[role="tablist"]')) return
       const tabs = getTabs(this)
       const currentIndex = tabs.indexOf(tabs.find(tab => tab.matches('[aria-selected="true"]'))!)
+      const [incrementKey, decrementKey] = getNavigationKeys(
+        !!target.closest('[role="tablist"][aria-orientation="vertical"]')
+      )
 
-      if (event.code === 'ArrowRight') {
+      if (event.code === incrementKey) {
         let index = currentIndex + 1
         if (index >= tabs.length) index = 0
         selectTab(this, index)
-      } else if (event.code === 'ArrowLeft') {
+      } else if (event.code === decrementKey) {
         let index = currentIndex - 1
         if (index < 0) index = tabs.length - 1
         selectTab(this, index)

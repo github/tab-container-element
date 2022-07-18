@@ -219,4 +219,82 @@ describe('tab-container', function () {
       )
     })
   })
+
+  describe('with [role="tablist"][aria-orientation="vertical"]', function () {
+    beforeEach(function () {
+      // eslint-disable-next-line github/no-inner-html
+      document.body.innerHTML = `
+      <tab-container>
+        <div role="tablist" aria-orientation="vertical">
+          <button type="button" role="tab" aria-selected="true">Tab one</button>
+          <button type="button" role="tab">Tab two</button>
+          <button type="button" role="tab">Tab three</button>
+        </div>
+        <div role="tabpanel">
+          Panel 1
+        </div>
+        <div role="tabpanel" hidden>
+          Panel 2
+        </div>
+        <div role="tabpanel" hidden data-tab-container-no-tabstop>
+          Panel 3
+        </div>
+      </tab-container>
+      `
+    })
+
+    it('supports up and down keyboard shortcuts', () => {
+      const tabContainer = document.querySelector('tab-container')
+      const tabs = document.querySelectorAll('button')
+      const panels = document.querySelectorAll('[role="tabpanel"]')
+      let counter = 0
+      tabContainer.addEventListener('tab-container-changed', () => counter++)
+
+      tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowUp', bubbles: true}))
+      assert(panels[0].hidden)
+      assert(!panels[2].hidden)
+      assert.equal(document.activeElement, tabs[2])
+
+      tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'Home', bubbles: true}))
+      assert(!panels[0].hidden)
+      assert(panels[2].hidden)
+      assert.equal(document.activeElement, tabs[0])
+      assert.equal(counter, 2)
+
+      tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowDown', bubbles: true}))
+      assert(panels[0].hidden)
+      assert(!panels[1].hidden)
+      assert(panels[2].hidden)
+      assert.equal(document.activeElement, panels[1])
+
+      tabs[1].dispatchEvent(new KeyboardEvent('keydown', {code: 'End', bubbles: true}))
+      assert(panels[0].hidden)
+      assert(panels[1].hidden)
+      assert(!panels[2].hidden)
+      assert.equal(document.activeElement, tabs[2])
+      assert.equal(counter, 2)
+    })
+
+    it('does not supports left and right keyboard shortcuts', () => {
+      const tabContainer = document.querySelector('tab-container')
+      const tabs = document.querySelectorAll('button')
+      const panels = document.querySelectorAll('[role="tabpanel"]')
+      let counter = 0
+      tabContainer.addEventListener('tab-container-changed', () => counter++)
+
+      tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowLeft', bubbles: true}))
+      assert(!panels[0].hidden)
+      assert(panels[1].hidden)
+      assert(panels[2].hidden)
+      assert.equal(document.activeElement, tabs[0])
+      assert.equal(counter, 0)
+
+      tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowRight', bubbles: true}))
+      assert(!panels[0].hidden)
+      assert(panels[1].hidden)
+      assert(panels[2].hidden)
+      assert.equal(document.activeElement, tabs[0])
+      assert.equal(counter, 0)
+    })
+  })
 })
