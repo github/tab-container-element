@@ -35,7 +35,6 @@ describe('tab-container', function () {
     })
 
     afterEach(function () {
-      // eslint-disable-next-line github/no-inner-html
       document.body.innerHTML = ''
     })
 

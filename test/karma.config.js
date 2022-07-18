@@ -1,4 +1,4 @@
-// eslint-disable-next-line import/no-commonjs, @typescript-eslint/no-var-requires
+// eslint-disable-next-line filenames/match-regex, import/no-commonjs, @typescript-eslint/no-var-requires
 process.env.CHROME_BIN = require('chromium').path
 
 // eslint-disable-next-line import/no-commonjs
