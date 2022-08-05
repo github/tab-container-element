@@ -2,6 +2,7 @@
   "name": "@github/tab-container-element",
   "version": "3.1.1",
   "description": "Tab container element",
+  "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
