@@ -171,15 +171,16 @@ describe('tab-container', function () {
     it('result in noop, when selectTab receives out of bounds index', function () {
       const tabContainer = document.querySelector('tab-container')
       const panels = document.querySelectorAll('[role="tabpanel"]')
-      let counter = 0
-      tabContainer.addEventListener('tab-container-changed', () => {
-        counter++
-      })
 
-      tabContainer.selectTab(20)
-      assert(!panels[0].hidden)
+      assert.throws(
+        () => tabContainer.selectTab(3),
+        'Cannot select tab at index "3" as it exceeds the total number of tabs'
+      )
+
+      tabContainer.selectTab(2)
+      assert(panels[0].hidden)
       assert(panels[1].hidden)
-      assert.equal(counter, 0)
+      assert(!panels[2].hidden)
     })
   })
 

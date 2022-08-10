@@ -89,7 +89,7 @@ export default class TabContainerElement extends HTMLElement {
      * Out of bounds index
      */
     if (index > tabs.length - 1) {
-      return
+      throw new Error(`Cannot select tab at index "${index}" as it exceeds the total number of tabs`)
     }
 
     const selectedTab = tabs[index]
