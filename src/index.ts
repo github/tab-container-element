@@ -89,7 +89,7 @@ export default class TabContainerElement extends HTMLElement {
      * Out of bounds index
      */
     if (index > tabs.length - 1) {
-      throw new Error(`Index "${index}" out of bounds`)
+      throw new RangeError(`Index "${index}" out of bounds`)
     }
 
     const selectedTab = tabs[index]
