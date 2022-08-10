@@ -172,10 +172,7 @@ describe('tab-container', function () {
       const tabContainer = document.querySelector('tab-container')
       const panels = document.querySelectorAll('[role="tabpanel"]')
 
-      assert.throws(
-        () => tabContainer.selectTab(3),
-        'Cannot select tab at index "3" as it exceeds the total number of tabs'
-      )
+      assert.throws(() => tabContainer.selectTab(3), 'Index "3" out of bounds')
 
       tabContainer.selectTab(2)
       assert(panels[0].hidden)
