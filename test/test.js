@@ -150,6 +150,37 @@ describe('tab-container', function () {
       assert.equal(tabs[1].getAttribute('tabindex'), '0')
       assert.equal(tabs[0].getAttribute('tabindex'), '-1')
     })
+
+    it('`selectTab` works and `tab-container-changed` event is dispatched', function () {
+      const tabContainer = document.querySelector('tab-container')
+      const tabs = document.querySelectorAll('button')
+      const panels = document.querySelectorAll('[role="tabpanel"]')
+      let counter = 0
+      tabContainer.addEventListener('tab-container-changed', event => {
+        counter++
+        assert.equal(event.detail.relatedTarget, panels[1])
+      })
+
+      tabContainer.selectTab(1)
+      assert(panels[0].hidden)
+      assert(!panels[1].hidden)
+      assert.equal(counter, 1)
+      assert.equal(document.activeElement, tabs[1])
+    })
+
+    it('result in noop, when selectTab receives out of bounds index', function () {
+      const tabContainer = document.querySelector('tab-container')
+      const panels = document.querySelectorAll('[role="tabpanel"]')
+      let counter = 0
+      tabContainer.addEventListener('tab-container-changed', () => {
+        counter++
+      })
+
+      tabContainer.selectTab(20)
+      assert(!panels[0].hidden)
+      assert(panels[1].hidden)
+      assert.equal(counter, 0)
+    })
   })
 
   describe('nesting', function () {

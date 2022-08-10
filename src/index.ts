@@ -36,16 +36,16 @@ export default class TabContainerElement extends HTMLElement {
       if (incrementKeys.some(code => event.code === code)) {
         let index = currentIndex + 1
         if (index >= tabs.length) index = 0
-        selectTab(this, index)
+        this.selectTab(index)
       } else if (decrementKeys.some(code => event.code === code)) {
         let index = currentIndex - 1
         if (index < 0) index = tabs.length - 1
-        selectTab(this, index)
+        this.selectTab(index)
       } else if (event.code === 'Home') {
-        selectTab(this, 0)
+        this.selectTab(0)
         event.preventDefault()
       } else if (event.code === 'End') {
-        selectTab(this, tabs.length - 1)
+        this.selectTab(tabs.length - 1)
         event.preventDefault()
       }
     })
@@ -60,7 +60,7 @@ export default class TabContainerElement extends HTMLElement {
       if (!(tab instanceof HTMLElement) || !tab.closest('[role="tablist"]')) return
 
       const index = tabs.indexOf(tab)
-      selectTab(this, index)
+      this.selectTab(index)
     })
   }
 
@@ -78,48 +78,55 @@ export default class TabContainerElement extends HTMLElement {
       }
     }
   }
-}
 
-function selectTab(tabContainer: TabContainerElement, index: number) {
-  const tabs = getTabs(tabContainer)
-  const panels = Array.from(tabContainer.querySelectorAll<HTMLElement>('[role="tabpanel"]')).filter(
-    panel => panel.closest(tabContainer.tagName) === tabContainer
-  )
+  selectTab(index: number): void {
+    const tabs = getTabs(this)
+    const panels = Array.from(this.querySelectorAll<HTMLElement>('[role="tabpanel"]')).filter(
+      panel => panel.closest(this.tagName) === this
+    )
 
-  const selectedTab = tabs[index]
-  const selectedPanel = panels[index]
-
-  const cancelled = !tabContainer.dispatchEvent(
-    new CustomEvent('tab-container-change', {
-      bubbles: true,
-      cancelable: true,
-      detail: {relatedTarget: selectedPanel}
-    })
-  )
-  if (cancelled) return
-
-  for (const tab of tabs) {
-    tab.setAttribute('aria-selected', 'false')
-    tab.setAttribute('tabindex', '-1')
-  }
-  for (const panel of panels) {
-    panel.hidden = true
-    if (!panel.hasAttribute('tabindex') && !panel.hasAttribute('data-tab-container-no-tabstop')) {
-      panel.setAttribute('tabindex', '0')
+    /**
+     * Out of bounds index
+     */
+    if (index > tabs.length - 1) {
+      return
     }
+
+    const selectedTab = tabs[index]
+    const selectedPanel = panels[index]
+
+    const cancelled = !this.dispatchEvent(
+      new CustomEvent('tab-container-change', {
+        bubbles: true,
+        cancelable: true,
+        detail: {relatedTarget: selectedPanel}
+      })
+    )
+    if (cancelled) return
+
+    for (const tab of tabs) {
+      tab.setAttribute('aria-selected', 'false')
+      tab.setAttribute('tabindex', '-1')
+    }
+    for (const panel of panels) {
+      panel.hidden = true
+      if (!panel.hasAttribute('tabindex') && !panel.hasAttribute('data-tab-container-no-tabstop')) {
+        panel.setAttribute('tabindex', '0')
+      }
+    }
+
+    selectedTab.setAttribute('aria-selected', 'true')
+    selectedTab.setAttribute('tabindex', '0')
+    selectedTab.focus()
+    selectedPanel.hidden = false
+
+    this.dispatchEvent(
+      new CustomEvent('tab-container-changed', {
+        bubbles: true,
+        detail: {relatedTarget: selectedPanel}
+      })
+    )
   }
-
-  selectedTab.setAttribute('aria-selected', 'true')
-  selectedTab.setAttribute('tabindex', '0')
-  selectedTab.focus()
-  selectedPanel.hidden = false
-
-  tabContainer.dispatchEvent(
-    new CustomEvent('tab-container-changed', {
-      bubbles: true,
-      detail: {relatedTarget: selectedPanel}
-    })
-  )
 }
 
 declare global {
