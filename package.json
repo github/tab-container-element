@@ -2,6 +2,7 @@
   "name": "@github/tab-container-element",
   "version": "3.1.1",
   "description": "Tab container element",
+  "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,7 +17,7 @@
     "prebuild": "npm run clean && npm run lint && mkdir dist",
     "build": "tsc",
     "pretest": "npm run build",
-    "test": "karma start test/karma.config.js",
+    "test": "karma start test/karma.config.cjs",
     "prepublishOnly": "npm run build",
     "postpublish": "npm publish --ignore-scripts --@github:registry='https://npm.pkg.github.com'"
   },
