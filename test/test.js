@@ -1,4 +1,4 @@
-import {assert} from '@esm-bundle/chai'
+import {assert, expect} from '@open-wc/testing'
 // eslint-disable-next-line import/extensions
 import '../src/index.ts'
 
@@ -39,8 +39,15 @@ describe('tab-container', function () {
     })
 
     afterEach(function () {
+      // Check to make sure we still have accessible markup after the test finishes running.
+      expect(document.body).to.be.accessible()
+
       // eslint-disable-next-line github/no-inner-html
       document.body.innerHTML = ''
+    })
+
+    it('has accessible markup', function () {
+      expect(document.body).to.be.accessible()
     })
 
     it('click works and `tab-container-changed` event is dispatched', function () {
@@ -216,6 +223,18 @@ describe('tab-container', function () {
       `
     })
 
+    afterEach(function () {
+      // Check to make sure we still have accessible markup after the test finishes running.
+      expect(document.body).to.be.accessible()
+
+      // eslint-disable-next-line github/no-inner-html
+      document.body.innerHTML = ''
+    })
+
+    it('has accessible markup', function () {
+      expect(document.body).to.be.accessible()
+    })
+
     it('only switches closest tab-containers on click', () => {
       const tabs = Array.from(document.querySelectorAll('.test-top > [role="tablist"] [role="tab"]'))
       const nestedTabs = Array.from(document.querySelectorAll('.test-nested > [role="tablist"] > [role="tab"]'))
@@ -297,6 +316,18 @@ describe('tab-container', function () {
         </div>
       </tab-container>
       `
+    })
+
+    afterEach(function () {
+      // Check to make sure we still have accessible markup after the test finishes running.
+      expect(document.body).to.be.accessible()
+
+      // eslint-disable-next-line github/no-inner-html
+      document.body.innerHTML = ''
+    })
+
+    it('has accessible markup', function () {
+      expect(document.body).to.be.accessible()
     })
 
     it('up and down keyboard shortcuts work and `tab-container-changed` events are dispatched', () => {
