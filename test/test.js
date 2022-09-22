@@ -1,3 +1,7 @@
+import {assert} from '@esm-bundle/chai'
+// eslint-disable-next-line import/extensions
+import '../src/index.ts'
+
 describe('tab-container', function () {
   describe('element creation', function () {
     it('creates from document.createElement', function () {
