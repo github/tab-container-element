@@ -1,6 +1,6 @@
 # &lt;tab-container&gt; element
 
-A accessible tab container element with keyboard support. Follows the [ARIA best practices guide on tabs](https://www.w3.org/TR/wai-aria-practices/#tabpanel).
+A accessible tab container element with keyboard support. Follows the [ARIA best practices guide on tabs](https://www.w3.org/WAI/ARIA/apg/patterns/tabpanel/).
 
 ## Installation
 
