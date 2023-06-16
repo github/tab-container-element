@@ -1,46 +1,19 @@
-name: Build
+name: Node CI
 
-on:
-  pull_request:
-  push:
-    branches:
-      - main
-
+on: push
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Get sources
-        uses: actions/checkout@v1
-
-      - name: Restore npm cache
-        uses: actions/cache@v2
+      - uses: actions/checkout@v2
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v1
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-
-
-      - name: Use Node.js 14
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build
-        run: npm run build
-
-      - name: Test
-        run: npm run test
+          node-version: 18.x
+      - name: npm install, build, and test
+        run: |
+          npm install
+          npm run build --if-present
+          npm test
         env:
           CI: true
