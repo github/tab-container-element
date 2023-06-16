@@ -1,0 +1,292 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "dist/bundle.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "TabContainerElement",
+          "default": "_TabContainerElement"
+        },
+        {
+          "kind": "variable",
+          "name": "dist_default",
+          "default": "TabContainerElement"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "TabContainerElement",
+          "declaration": {
+            "name": "TabContainerElement",
+            "module": "dist/bundle.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "dist_default",
+            "module": "dist/bundle.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "dist/index.js",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "TabContainerElement",
+          "declaration": {
+            "name": "TabContainerElement",
+            "module": "dist/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "TabContainerElement",
+            "module": "dist/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "./tab-container-element-define.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "dist/tab-container-element-define.js",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "TabContainerElement",
+            "module": "dist/tab-container-element-define.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "./tab-container-element.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "dist/tab-container-element.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "TabContainerElement",
+          "members": [
+            {
+              "kind": "method",
+              "name": "define",
+              "static": true,
+              "parameters": [
+                {
+                  "name": "tag",
+                  "default": "'tab-container'"
+                },
+                {
+                  "name": "registry",
+                  "default": "customElements"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "selectTab",
+              "parameters": [
+                {
+                  "name": "index"
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "tab-container-change",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "tab-container-changed",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "TabContainerElement",
+          "declaration": {
+            "name": "TabContainerElement",
+            "module": "dist/tab-container-element.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "TabContainerElement",
+          "declaration": {
+            "name": "TabContainerElement",
+            "module": "src/index.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "TabContainerElement",
+            "module": "src/index.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "./tab-container-element-define.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/tab-container-element-define.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "TabContainerElement",
+            "module": "src/tab-container-element-define.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "./tab-container-element.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/tab-container-element.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "TabContainerElement",
+          "members": [
+            {
+              "kind": "method",
+              "name": "define",
+              "static": true,
+              "parameters": [
+                {
+                  "name": "tag",
+                  "default": "'tab-container'"
+                },
+                {
+                  "name": "registry",
+                  "default": "customElements"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "selectTab",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "index",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "tab-container-change",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "tab-container-changed",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "TabContainerElement",
+          "declaration": {
+            "name": "TabContainerElement",
+            "module": "src/tab-container-element.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "test/test.js",
+      "declarations": [],
+      "exports": []
+    }
+  ]
+}

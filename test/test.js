@@ -1,5 +1,4 @@
 import {assert, expect} from '@open-wc/testing'
-// eslint-disable-next-line import/extensions
 import '../src/index.ts'
 
 describe('tab-container', function () {
@@ -17,7 +16,6 @@ describe('tab-container', function () {
 
   describe('after tree insertion', function () {
     beforeEach(function () {
-      // eslint-disable-next-line github/no-inner-html
       document.body.innerHTML = `
       <tab-container>
         <div role="tablist">
@@ -42,7 +40,6 @@ describe('tab-container', function () {
       // Check to make sure we still have accessible markup after the test finishes running.
       expect(document.body).to.be.accessible()
 
-      // eslint-disable-next-line github/no-inner-html
       document.body.innerHTML = ''
     })
 
@@ -195,7 +192,6 @@ describe('tab-container', function () {
 
   describe('nesting', function () {
     beforeEach(function () {
-      // eslint-disable-next-line github/no-inner-html
       document.body.innerHTML = `
       <tab-container class="test-top">
         <div role="tablist" >
@@ -227,7 +223,6 @@ describe('tab-container', function () {
       // Check to make sure we still have accessible markup after the test finishes running.
       expect(document.body).to.be.accessible()
 
-      // eslint-disable-next-line github/no-inner-html
       document.body.innerHTML = ''
     })
 
@@ -285,19 +280,18 @@ describe('tab-container', function () {
       assert.deepStrictEqual(
         nestedPanels.map(isHidden),
         [true, false],
-        'nested panels changed state when top panel changed'
+        'nested panels changed state when top panel changed',
       )
       assert.deepStrictEqual(
         nestedTabs.map(isSelected),
         [false, true],
-        'nested tabs changed state when top panel changed'
+        'nested tabs changed state when top panel changed',
       )
     })
   })
 
   describe('with [role="tablist"][aria-orientation="vertical"]', function () {
     beforeEach(function () {
-      // eslint-disable-next-line github/no-inner-html
       document.body.innerHTML = `
       <tab-container>
         <div role="tablist" aria-orientation="vertical">
@@ -322,7 +316,6 @@ describe('tab-container', function () {
       // Check to make sure we still have accessible markup after the test finishes running.
       expect(document.body).to.be.accessible()
 
-      // eslint-disable-next-line github/no-inner-html
       document.body.innerHTML = ''
     })
 
