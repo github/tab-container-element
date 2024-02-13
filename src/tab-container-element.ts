@@ -119,6 +119,12 @@ export class TabContainerElement extends HTMLElement {
     panelSlot.setAttribute('role', 'presentation')
     shadowRoot.replaceChildren(tabListSlot, panelSlot)
 
+    if (this.#internals && 'role' in this.#internals) {
+      this.#internals.role = 'presentation'
+    } else {
+      this.setAttribute('role', 'presentation')
+    }
+
     this.addEventListener('keydown', this)
     this.addEventListener('click', this)
     this.selectTab(
