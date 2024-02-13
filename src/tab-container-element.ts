@@ -186,12 +186,14 @@ export class TabContainerElement extends HTMLElement {
 
   selectTab(index: number): void {
     if (!this.#setup) {
+      const tabListSlot = this.#tabListSlot;
       const customTabList = this.querySelector('[role=tablist]')
       if (customTabList && customTabList.closest(this.tagName) === this) {
-        this.#tabListSlot.assign(customTabList)
+        tabListSlot.assign(customTabList)
       } else {
-        this.#tabListSlot.assign(...[...this.children].filter(e => e.matches('[role=tab]')))
-        this.#tabListSlot.role = 'tablist'
+        tabListSlot.assign(...[...this.children].filter(e => e.matches('[role=tab]')))
+        tabListSlot.role = 'tablist'
+        tabListSlot.style.display = 'block'
       }
       const tabList = this.#tabList
       if (this.hasAttribute('aria-description')) {
