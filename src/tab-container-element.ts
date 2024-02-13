@@ -94,6 +94,19 @@ export class TabContainerElement extends HTMLElement {
     )
   }
 
+  get vertical(): boolean {
+    return this.#tabList.getAttribute('aria-orientation') === 'vertical'
+  }
+
+  set vertical(isVertical: boolean) {
+    const tabList = this.#tabList
+    if (tabList && isVertical) {
+      tabList.setAttribute('aria-orientation', 'vertical')
+    } else {
+      tabList.setAttribute('aria-orientation', 'horizontal')
+    }
+  }
+
   #setup = false
   #internals!: ElementInternals | null
   connectedCallback(): void {
@@ -115,6 +128,13 @@ export class TabContainerElement extends HTMLElement {
       ),
     )
     this.#setup = true
+  }
+
+  attributeChangedCallback(name: string) {
+    if (!this.isConnected || !this.shadowRoot) return
+    if (name === 'vertical') {
+      this.vertical = this.hasAttribute('vertical')
+    }
   }
 
   handleEvent(event: Event) {
@@ -175,6 +195,9 @@ export class TabContainerElement extends HTMLElement {
       if (this.hasAttribute('aria-label')) {
         tabList.setAttribute('aria-label', this.getAttribute('aria-label')!)
         this.removeAttribute('aria-label')
+      }
+      if (this.vertical) {
+        this.#tabList.setAttribute('aria-orientation', 'vertical')
       }
     }
 
