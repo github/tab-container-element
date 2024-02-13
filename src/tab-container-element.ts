@@ -66,8 +66,15 @@ export class TabContainerElement extends HTMLElement {
     }
   }
 
+  static observedAttributes = ['vertical']
+
   get #tabList() {
-    return this.querySelector<HTMLElement>('[role=tablist]')
+    const slot = this.#tabListSlot
+    if (this.#tabListSlot.hasAttribute('role')) {
+      return slot
+    } else {
+      return slot.assignedNodes()[0] as HTMLElement
+    }
   }
 
   get #tabListSlot() {
@@ -160,7 +167,17 @@ export class TabContainerElement extends HTMLElement {
         this.#tabListSlot.assign(...[...this.children].filter(e => e.matches('[role=tab]')))
         this.#tabListSlot.role = 'tablist'
       }
+      const tabList = this.#tabList
+      if (this.hasAttribute('aria-description')) {
+        tabList.setAttribute('aria-description', this.getAttribute('aria-description')!)
+        this.removeAttribute('aria-description')
+      }
+      if (this.hasAttribute('aria-label')) {
+        tabList.setAttribute('aria-label', this.getAttribute('aria-label')!)
+        this.removeAttribute('aria-label')
+      }
     }
+
     const tabs = this.#tabs
     const panels = Array.from(this.querySelectorAll<HTMLElement>('[role="tabpanel"]')).filter(
       panel => panel.closest(this.tagName) === this,
