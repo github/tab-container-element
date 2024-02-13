@@ -70,14 +70,35 @@ export class TabContainerElement extends HTMLElement {
     return this.querySelector<HTMLElement>('[role=tablist]')
   }
 
+  get #tabListSlot() {
+    return this.shadowRoot!.querySelector<HTMLSlotElement>('slot[part="tablist"]')!
+  }
+
+  get #panelSlot() {
+    return this.shadowRoot!.querySelector<HTMLSlotElement>('slot[part="panel"]')!
+  }
+
   get #tabs() {
+    if (this.#tabListSlot.matches('[role=tablist]')) {
+      return this.#tabListSlot.assignedNodes() as HTMLElement[]
+    }
     return Array.from(this.#tabList?.querySelectorAll<HTMLElement>('[role="tab"]') || []).filter(
       tab => tab instanceof HTMLElement && tab.closest(this.tagName) === this,
     )
   }
 
   #setup = false
+  #internals!: ElementInternals | null
   connectedCallback(): void {
+    this.#internals ||= this.attachInternals ? this.attachInternals() : null
+    const shadowRoot = this.shadowRoot || this.attachShadow({mode: 'open', slotAssignment: 'manual'})
+    const tabListSlot = document.createElement('slot')
+    tabListSlot.setAttribute('part', 'tablist')
+    const panelSlot = document.createElement('slot')
+    panelSlot.setAttribute('part', 'panel')
+    panelSlot.setAttribute('role', 'presentation')
+    shadowRoot.replaceChildren(tabListSlot, panelSlot)
+
     this.addEventListener('keydown', this)
     this.addEventListener('click', this)
     this.selectTab(
@@ -131,6 +152,15 @@ export class TabContainerElement extends HTMLElement {
   }
 
   selectTab(index: number): void {
+    if (!this.#setup) {
+      const customTabList = this.querySelector('[role=tablist]')
+      if (customTabList && customTabList.closest(this.tagName) === this) {
+        this.#tabListSlot.assign(customTabList)
+      } else {
+        this.#tabListSlot.assign(...[...this.children].filter(e => e.matches('[role=tab]')))
+        this.#tabListSlot.role = 'tablist'
+      }
+    }
     const tabs = this.#tabs
     const panels = Array.from(this.querySelectorAll<HTMLElement>('[role="tabpanel"]')).filter(
       panel => panel.closest(this.tagName) === this,
@@ -163,7 +193,6 @@ export class TabContainerElement extends HTMLElement {
       tab.setAttribute('tabindex', '-1')
     }
     for (const panel of panels) {
-      panel.hidden = true
       if (!panel.hasAttribute('tabindex') && !panel.hasAttribute('data-tab-container-no-tabstop')) {
         panel.setAttribute('tabindex', '0')
       }
@@ -171,6 +200,7 @@ export class TabContainerElement extends HTMLElement {
 
     selectedTab.setAttribute('aria-selected', 'true')
     selectedTab.setAttribute('tabindex', '0')
+    this.#panelSlot.assign(selectedPanel)
     selectedPanel.hidden = false
 
     if (this.#setup) {

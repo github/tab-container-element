@@ -3,7 +3,7 @@ import '../src/index.ts'
 
 describe('tab-container', function () {
   const isSelected = e => e.matches('[aria-selected=true]')
-  const isHidden = e => e.hidden
+  const isHidden = e => !e.assignedSlot
   let tabContainer = null
   let tabs = []
   let panels = []
