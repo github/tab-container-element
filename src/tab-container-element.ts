@@ -1,3 +1,5 @@
+const HTMLElement = globalThis.HTMLElement || (null as unknown as (typeof window)['HTMLElement'])
+
 type IncrementKeyCode = 'ArrowRight' | 'ArrowDown'
 type DecrementKeyCode = 'ArrowUp' | 'ArrowLeft'
 
