@@ -77,6 +77,18 @@ export class TabContainerElement extends HTMLElement {
     }
   }
 
+  get #beforeTabsSlot() {
+    return this.shadowRoot!.querySelector<HTMLSlotElement>('slot[part="before-tabs"]')!
+  }
+
+  get #afterTabsSlot() {
+    return this.shadowRoot!.querySelector<HTMLSlotElement>('slot[part="after-tabs"]')!
+  }
+
+  get #afterPanelsSlot() {
+    return this.shadowRoot!.querySelector<HTMLSlotElement>('slot[part="after-panels"]')!
+  }
+
   get #tabListSlot() {
     return this.shadowRoot!.querySelector<HTMLSlotElement>('slot[part="tablist"]')!
   }
@@ -94,8 +106,12 @@ export class TabContainerElement extends HTMLElement {
     )
   }
 
+  get activePanel() {
+    return this.#panelSlot.assignedNodes()[0] as HTMLElement
+  }
+
   get vertical(): boolean {
-    return this.#tabList.getAttribute('aria-orientation') === 'vertical'
+    return this.#tabList?.getAttribute('aria-orientation') === 'vertical'
   }
 
   set vertical(isVertical: boolean) {
@@ -112,12 +128,21 @@ export class TabContainerElement extends HTMLElement {
   connectedCallback(): void {
     this.#internals ||= this.attachInternals ? this.attachInternals() : null
     const shadowRoot = this.shadowRoot || this.attachShadow({mode: 'open', slotAssignment: 'manual'})
+    const tabListContainer = document.createElement('div')
+    tabListContainer.style.display = 'flex'
     const tabListSlot = document.createElement('slot')
     tabListSlot.setAttribute('part', 'tablist')
     const panelSlot = document.createElement('slot')
     panelSlot.setAttribute('part', 'panel')
     panelSlot.setAttribute('role', 'presentation')
-    shadowRoot.replaceChildren(tabListSlot, panelSlot)
+    const beforeTabSlot = document.createElement('slot')
+    beforeTabSlot.setAttribute('part', 'before-tabs')
+    const afterTabSlot = document.createElement('slot')
+    afterTabSlot.setAttribute('part', 'after-tabs')
+    tabListContainer.append(beforeTabSlot, tabListSlot, afterTabSlot)
+    const afterSlot = document.createElement('slot')
+    afterSlot.setAttribute('part', 'after-panels')
+    shadowRoot.replaceChildren(tabListContainer, panelSlot, afterSlot)
 
     if (this.#internals && 'role' in this.#internals) {
       this.#internals.role = 'presentation'
@@ -186,7 +211,7 @@ export class TabContainerElement extends HTMLElement {
 
   selectTab(index: number): void {
     if (!this.#setup) {
-      const tabListSlot = this.#tabListSlot;
+      const tabListSlot = this.#tabListSlot
       const customTabList = this.querySelector('[role=tablist]')
       if (customTabList && customTabList.closest(this.tagName) === this) {
         tabListSlot.assign(customTabList)
@@ -207,6 +232,30 @@ export class TabContainerElement extends HTMLElement {
       if (this.vertical) {
         this.#tabList.setAttribute('aria-orientation', 'vertical')
       }
+      const beforeSlotted: Element[] = []
+      const afterTabSlotted: Element[] = []
+      const afterSlotted: Element[] = []
+      let autoSlotted = beforeSlotted
+      for (const child of this.children) {
+        if (child.getAttribute('role') === 'tab' || child.getAttribute('role') === 'tablist') {
+          autoSlotted = afterTabSlotted
+          continue
+        }
+        if (child.getAttribute('role') === 'tabpanel') {
+          autoSlotted = afterSlotted
+          continue
+        }
+        if (child.getAttribute('slot') === 'before-tabs') {
+          beforeSlotted.push(child)
+        } else if (child.getAttribute('slot') === 'after-tabs') {
+          afterTabSlotted.push(child)
+        } else {
+          autoSlotted.push(child)
+        }
+      }
+      this.#beforeTabsSlot.assign(...beforeSlotted)
+      this.#afterTabsSlot.assign(...afterTabSlotted)
+      this.#afterPanelsSlot.assign(...afterSlotted)
     }
 
     const tabs = this.#tabs
