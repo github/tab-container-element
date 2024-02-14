@@ -2,6 +2,13 @@ import {assert, expect} from '@open-wc/testing'
 import '../src/index.ts'
 
 describe('tab-container', function () {
+  const isSelected = e => e.matches('[aria-selected=true]')
+  const isHidden = e => e.hidden
+  let tabContainer = null
+  let tabs = []
+  let panels = []
+  let events = []
+
   describe('element creation', function () {
     it('creates from document.createElement', function () {
       const el = document.createElement('tab-container')
@@ -34,6 +41,12 @@ describe('tab-container', function () {
         </div>
       </tab-container>
       `
+      tabContainer = document.querySelector('tab-container')
+      tabs = Array.from(document.querySelectorAll('button'))
+      panels = Array.from(document.querySelectorAll('[role="tabpanel"]'))
+      events = []
+      tabContainer.addEventListener('tab-container-change', e => events.push(e))
+      tabContainer.addEventListener('tab-container-changed', e => events.push(e))
     })
 
     afterEach(function () {
@@ -48,88 +61,90 @@ describe('tab-container', function () {
     })
 
     it('click works and `tab-container-changed` event is dispatched', function () {
-      const tabContainer = document.querySelector('tab-container')
-      const tabs = document.querySelectorAll('button')
-      const panels = document.querySelectorAll('[role="tabpanel"]')
-      let counter = 0
-      tabContainer.addEventListener('tab-container-changed', event => {
-        counter++
-        assert.equal(event.detail.relatedTarget, panels[1])
-      })
-
       tabs[1].click()
-      assert(panels[0].hidden)
-      assert(!panels[1].hidden)
-      assert.equal(counter, 1)
+      assert.deepStrictEqual(tabs.map(isSelected), [false, true, false], 'Second tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [true, false, true], 'Second panel is visible')
+      assert.equal(events.length, 2, 'tab-container-change(d) called')
+      assert.deepStrictEqual(
+        events.map(e => e.type),
+        ['tab-container-change', 'tab-container-changed'],
+        'events fired in right order',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.detail.relatedTarget),
+        [panels[1], panels[1]],
+        'change events point to second panel',
+      )
       assert.equal(document.activeElement, tabs[1])
     })
 
     it('keyboard shortcuts work and `tab-container-changed` events are dispatched', function () {
-      const tabContainer = document.querySelector('tab-container')
-      const tabs = document.querySelectorAll('button')
-      const panels = document.querySelectorAll('[role="tabpanel"]')
-      let counter = 0
-      tabContainer.addEventListener('tab-container-changed', () => counter++)
-
       tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowLeft', bubbles: true}))
-      assert(panels[0].hidden)
-      assert(!panels[2].hidden)
+      assert.deepStrictEqual(tabs.map(isSelected), [false, false, true], 'Third tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [true, true, false], 'Third panel is visible')
       assert.equal(document.activeElement, tabs[2])
+      assert.equal(events.length, 2, 'tab-container-change(d) called')
+      assert.deepStrictEqual(
+        events.map(e => e.type),
+        ['tab-container-change', 'tab-container-changed'],
+        'events fired in right order',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.detail.relatedTarget),
+        [panels[2], panels[2]],
+        'change events point to third panel',
+      )
+
+      events = []
 
       tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'Home', bubbles: true}))
-      assert(!panels[0].hidden)
-      assert(panels[2].hidden)
+      assert.deepStrictEqual(tabs.map(isSelected), [true, false, false], 'First tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [false, true, true], 'First panel is visible')
       assert.equal(document.activeElement, tabs[0])
-      assert.equal(counter, 2)
+      assert.equal(events.length, 2, 'tab-container-change(d) called')
+      assert.deepStrictEqual(
+        events.map(e => e.type),
+        ['tab-container-change', 'tab-container-changed'],
+        'events fired in right order',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.detail.relatedTarget),
+        [panels[0], panels[0]],
+        'change events point to first panel',
+      )
     })
 
     it('down and up keyboard shortcuts do not work and `tab-container-changed` events are not dispatched', () => {
-      const tabContainer = document.querySelector('tab-container')
-      const tabs = document.querySelectorAll('button')
-      const panels = document.querySelectorAll('[role="tabpanel"]')
-      let counter = 0
-      tabContainer.addEventListener('tab-container-changed', () => counter++)
-
       tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowDown', bubbles: true}))
-      assert(!panels[0].hidden)
-      assert(panels[1].hidden)
-      assert(panels[2].hidden)
+      assert.deepStrictEqual(tabs.map(isSelected), [true, false, false], 'First tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [false, true, true], 'First panel is visible')
       assert.equal(document.activeElement, document.body)
-      assert.equal(counter, 0)
+      assert.equal(events.length, 0)
 
       tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowUp', bubbles: true}))
-      assert(!panels[0].hidden)
-      assert(panels[1].hidden)
-      assert(panels[2].hidden)
+      assert.deepStrictEqual(tabs.map(isSelected), [true, false, false], 'First tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [false, true, true], 'First panel is visible')
       assert.equal(document.activeElement, document.body)
-      assert.equal(counter, 0)
+      assert.equal(events.length, 0)
     })
 
     it('click works and a cancellable `tab-container-change` event is dispatched', function () {
-      const tabContainer = document.querySelector('tab-container')
-      const tabs = document.querySelectorAll('button')
-      const panels = document.querySelectorAll('[role="tabpanel"]')
-      let counter = 0
       tabContainer.addEventListener('tab-container-change', event => {
-        counter++
-        assert.equal(event.detail.relatedTarget, panels[1])
         event.preventDefault()
       })
 
       tabs[1].click()
 
       // Since we prevented the event, nothing should have changed.
-      assert(!panels[0].hidden)
-      assert(panels[1].hidden)
+      assert.deepStrictEqual(tabs.map(isSelected), [true, false, false], 'First tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [false, true, true], 'First panel is visible')
+      assert.equal(document.activeElement, document.body)
 
       // The event listener should have been called.
-      assert.equal(counter, 1)
+      assert.equal(events.length, 1, 'only tab-container-change fired')
     })
 
     it("panels that don't have a `data-tab-container-no-tabstop` attribute have tabindex with value '0'", function () {
-      const tabs = document.querySelectorAll('button')
-      const panels = document.querySelectorAll('[role="tabpanel"]')
-
       tabs[1].click()
 
       assert.equal(panels[0].getAttribute('tabindex'), '0')
@@ -153,44 +168,41 @@ describe('tab-container', function () {
       }
     })
     it('selected tab has tabindex="0" after selection', function () {
-      const tabs = document.querySelectorAll('[role="tab"]')
-
       tabs[1].click()
       assert.equal(tabs[1].getAttribute('tabindex'), '0')
       assert.equal(tabs[0].getAttribute('tabindex'), '-1')
     })
 
     it('`selectTab` works and `tab-container-changed` event is dispatched', function () {
-      const tabContainer = document.querySelector('tab-container')
-      const tabs = document.querySelectorAll('button')
-      const panels = document.querySelectorAll('[role="tabpanel"]')
-      let counter = 0
-      tabContainer.addEventListener('tab-container-changed', event => {
-        counter++
-        assert.equal(event.detail.relatedTarget, panels[1])
-      })
-
       tabContainer.selectTab(1)
-      assert(panels[0].hidden)
-      assert(!panels[1].hidden)
-      assert.equal(counter, 1)
+      assert.deepStrictEqual(tabs.map(isSelected), [false, true, false], 'Second tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [true, false, true], 'Second panel is visible')
+      assert.equal(events.length, 2, 'tab-container-change(d) called')
+      assert.deepStrictEqual(
+        events.map(e => e.type),
+        ['tab-container-change', 'tab-container-changed'],
+        'events fired in right order',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.detail.relatedTarget),
+        [panels[1], panels[1]],
+        'change events point to second panel',
+      )
       assert.equal(document.activeElement, tabs[1])
     })
 
     it('result in noop, when selectTab receives out of bounds index', function () {
-      const tabContainer = document.querySelector('tab-container')
-      const panels = document.querySelectorAll('[role="tabpanel"]')
-
       assert.throws(() => tabContainer.selectTab(3), 'Index "3" out of bounds')
 
       tabContainer.selectTab(2)
-      assert(panels[0].hidden)
-      assert(panels[1].hidden)
-      assert(!panels[2].hidden)
+      assert.deepStrictEqual(tabs.map(isSelected), [false, false, true], 'Third tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [true, true, false], 'Third panel is visible')
     })
   })
 
   describe('nesting', function () {
+    let nestedTabs = []
+    let nestedPanels = []
     beforeEach(function () {
       document.body.innerHTML = `
       <tab-container class="test-top">
@@ -217,6 +229,14 @@ describe('tab-container', function () {
         </div>
       </tab-container>
       `
+      tabContainer = document.querySelector('tab-container')
+      tabs = Array.from(document.querySelectorAll('body > tab-container > [role="tablist"] > button'))
+      panels = Array.from(document.querySelectorAll('body > tab-container > [role="tabpanel"]'))
+      nestedTabs = Array.from(document.querySelectorAll('.test-nested > [role="tablist"] > [role="tab"]'))
+      nestedPanels = Array.from(document.querySelectorAll('.test-nested > [role="tabpanel"]'))
+      events = []
+      tabContainer.addEventListener('tab-container-change', e => events.push(e))
+      tabContainer.addEventListener('tab-container-changed', e => events.push(e))
     })
 
     afterEach(function () {
@@ -231,13 +251,6 @@ describe('tab-container', function () {
     })
 
     it('only switches closest tab-containers on click', () => {
-      const tabs = Array.from(document.querySelectorAll('.test-top > [role="tablist"] [role="tab"]'))
-      const nestedTabs = Array.from(document.querySelectorAll('.test-nested > [role="tablist"] > [role="tab"]'))
-      const panels = Array.from(document.querySelectorAll('.test-top > [role="tabpanel"]'))
-      const nestedPanels = Array.from(document.querySelectorAll('.test-nested > [role="tabpanel"]'))
-      const isSelected = e => e.matches('[aria-selected=true]')
-      const isHidden = e => e.hidden
-
       assert.deepStrictEqual(tabs.map(isSelected), [true, false, false])
       assert.deepStrictEqual(nestedTabs.map(isSelected), [true, false])
       assert.deepStrictEqual(panels.map(isHidden), [false, true, true])
@@ -256,13 +269,6 @@ describe('tab-container', function () {
     })
 
     it('only switches closest tab-containers on arrow', () => {
-      const tabs = Array.from(document.querySelectorAll('.test-top > [role="tablist"] [role="tab"]'))
-      const nestedTabs = Array.from(document.querySelectorAll('.test-nested > [role="tablist"] > [role="tab"]'))
-      const panels = Array.from(document.querySelectorAll('.test-top > [role="tabpanel"]'))
-      const nestedPanels = Array.from(document.querySelectorAll('.test-nested > [role="tabpanel"]'))
-      const isSelected = e => e.matches('[aria-selected=true]')
-      const isHidden = e => e.hidden
-
       assert.deepStrictEqual(tabs.map(isSelected), [true, false, false])
       assert.deepStrictEqual(nestedTabs.map(isSelected), [true, false])
       assert.deepStrictEqual(panels.map(isHidden), [false, true, true])
@@ -290,7 +296,7 @@ describe('tab-container', function () {
     })
   })
 
-  describe('with [role="tablist"][aria-orientation="vertical"]', function () {
+  describe('with vertical tabs', function () {
     beforeEach(function () {
       document.body.innerHTML = `
       <tab-container>
@@ -310,6 +316,12 @@ describe('tab-container', function () {
         </div>
       </tab-container>
       `
+      tabContainer = document.querySelector('tab-container')
+      tabs = Array.from(document.querySelectorAll('button'))
+      panels = Array.from(document.querySelectorAll('[role="tabpanel"]'))
+      events = []
+      tabContainer.addEventListener('tab-container-change', e => events.push(e))
+      tabContainer.addEventListener('tab-container-changed', e => events.push(e))
     })
 
     afterEach(function () {
@@ -324,65 +336,141 @@ describe('tab-container', function () {
     })
 
     it('up and down keyboard shortcuts work and `tab-container-changed` events are dispatched', () => {
-      const tabContainer = document.querySelector('tab-container')
-      const tabs = document.querySelectorAll('button')
-      const panels = document.querySelectorAll('[role="tabpanel"]')
-      let counter = 0
-      tabContainer.addEventListener('tab-container-changed', () => counter++)
-
       tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowUp', bubbles: true}))
-      assert(panels[0].hidden)
-      assert(!panels[2].hidden)
+      assert.deepStrictEqual(tabs.map(isSelected), [false, false, true], 'Third tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [true, true, false], 'Third panel is visible')
       assert.equal(document.activeElement, tabs[2])
+      assert.equal(events.length, 2, 'tab-container-change(d) called')
+      assert.deepStrictEqual(
+        events.map(e => e.type),
+        ['tab-container-change', 'tab-container-changed'],
+        'events fired in right order',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.detail.relatedTarget),
+        [panels[2], panels[2]],
+        'change events point to second panel',
+      )
+      events = []
 
       tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'Home', bubbles: true}))
-      assert(!panels[0].hidden)
-      assert(panels[2].hidden)
+      assert.deepStrictEqual(tabs.map(isSelected), [true, false, false], 'First tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [false, true, true], 'First panel is visible')
       assert.equal(document.activeElement, tabs[0])
+      assert.equal(events.length, 2, 'tab-container-change(d) called')
+      assert.deepStrictEqual(
+        events.map(e => e.type),
+        ['tab-container-change', 'tab-container-changed'],
+        'events fired in right order',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.detail.relatedTarget),
+        [panels[0], panels[0]],
+        'change events point to first panel',
+      )
+      events = []
 
       tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowDown', bubbles: true}))
-      assert(panels[0].hidden)
-      assert(!panels[1].hidden)
-      assert(panels[2].hidden)
+      assert.deepStrictEqual(tabs.map(isSelected), [false, true, false], 'Second tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [true, false, true], 'Second panel is visible')
       assert.equal(document.activeElement, tabs[1])
+      assert.equal(events.length, 2, 'tab-container-change(d) called')
+      assert.deepStrictEqual(
+        events.map(e => e.type),
+        ['tab-container-change', 'tab-container-changed'],
+        'events fired in right order',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.detail.relatedTarget),
+        [panels[1], panels[1]],
+        'change events point to second panel',
+      )
+      events = []
 
       tabs[1].dispatchEvent(new KeyboardEvent('keydown', {code: 'End', bubbles: true}))
-      assert(panels[0].hidden)
-      assert(panels[1].hidden)
-      assert(!panels[2].hidden)
+      assert.deepStrictEqual(tabs.map(isSelected), [false, false, true], 'Third tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [true, true, false], 'Third panel is visible')
       assert.equal(document.activeElement, tabs[2])
-      assert.equal(counter, 4)
+      assert.equal(events.length, 2, 'tab-container-change(d) called')
+      assert.deepStrictEqual(
+        events.map(e => e.type),
+        ['tab-container-change', 'tab-container-changed'],
+        'events fired in right order',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.detail.relatedTarget),
+        [panels[2], panels[2]],
+        'change events point to third panel',
+      )
     })
 
     it('left and right keyboard shortcuts work and `tab-container-changed` events are dispatched', () => {
-      const tabContainer = document.querySelector('tab-container')
-      const tabs = document.querySelectorAll('button')
-      const panels = document.querySelectorAll('[role="tabpanel"]')
-      let counter = 0
-      tabContainer.addEventListener('tab-container-changed', () => counter++)
-
       tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowLeft', bubbles: true}))
-      assert(panels[0].hidden)
-      assert(!panels[2].hidden)
+      assert.deepStrictEqual(tabs.map(isSelected), [false, false, true], 'Third tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [true, true, false], 'Third panel is visible')
       assert.equal(document.activeElement, tabs[2])
+      assert.equal(events.length, 2, 'tab-container-change(d) called')
+      assert.deepStrictEqual(
+        events.map(e => e.type),
+        ['tab-container-change', 'tab-container-changed'],
+        'events fired in right order',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.detail.relatedTarget),
+        [panels[2], panels[2]],
+        'change events point to third panel',
+      )
+      events = []
 
       tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'Home', bubbles: true}))
-      assert(!panels[0].hidden)
-      assert(panels[2].hidden)
+      assert.deepStrictEqual(tabs.map(isSelected), [true, false, false], 'First tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [false, true, true], 'First panel is visible')
       assert.equal(document.activeElement, tabs[0])
+      assert.equal(events.length, 2, 'tab-container-change(d) called')
+      assert.deepStrictEqual(
+        events.map(e => e.type),
+        ['tab-container-change', 'tab-container-changed'],
+        'events fired in right order',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.detail.relatedTarget),
+        [panels[0], panels[0]],
+        'change events point to first panel',
+      )
+      events = []
 
       tabs[0].dispatchEvent(new KeyboardEvent('keydown', {code: 'ArrowRight', bubbles: true}))
-      assert(panels[0].hidden)
-      assert(!panels[1].hidden)
-      assert(panels[2].hidden)
+      assert.deepStrictEqual(tabs.map(isSelected), [false, true, false], 'Second tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [true, false, true], 'Second panel is visible')
       assert.equal(document.activeElement, tabs[1])
+      assert.equal(events.length, 2, 'tab-container-change(d) called')
+      assert.deepStrictEqual(
+        events.map(e => e.type),
+        ['tab-container-change', 'tab-container-changed'],
+        'events fired in right order',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.detail.relatedTarget),
+        [panels[1], panels[1]],
+        'change events point to second panel',
+      )
+      events = []
 
       tabs[1].dispatchEvent(new KeyboardEvent('keydown', {code: 'End', bubbles: true}))
-      assert(panels[0].hidden)
-      assert(panels[1].hidden)
-      assert(!panels[2].hidden)
+      assert.deepStrictEqual(tabs.map(isSelected), [false, false, true], 'Third tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [true, true, false], 'Third panel is visible')
       assert.equal(document.activeElement, tabs[2])
-      assert.equal(counter, 4)
+      assert.equal(events.length, 2, 'tab-container-change(d) called')
+      assert.deepStrictEqual(
+        events.map(e => e.type),
+        ['tab-container-change', 'tab-container-changed'],
+        'events fired in right order',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.detail.relatedTarget),
+        [panels[2], panels[2]],
+        'change events point to third panel',
+      )
     })
   })
 })
