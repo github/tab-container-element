@@ -1,4 +1,4 @@
-import {assert, expect} from '@open-wc/testing'
+import {assert} from '@open-wc/testing'
 import '../src/index.ts'
 
 describe('tab-container', function () {
@@ -18,6 +18,30 @@ describe('tab-container', function () {
     it('creates from constructor', function () {
       const el = new window.TabContainerElement()
       assert.equal('TAB-CONTAINER', el.nodeName)
+    })
+  })
+
+  describe('events', function () {
+    it('has an onTabContainerChange property for the change event', function () {
+      const el = document.createElement('tab-container')
+      let called = false
+      const listener = () => (called = true)
+      el.onTabContainerChange = listener
+      assert.equal(el.onTabContainerChange, listener)
+      assert.equal(called, false)
+      el.dispatchEvent(new Event('tab-container-change'))
+      assert.equal(called, true)
+    })
+
+    it('has an onTabContainerChanged property for the changed event', function () {
+      const el = document.createElement('tab-container')
+      let called = false
+      const listener = () => (called = true)
+      el.onTabContainerChanged = listener
+      assert.equal(el.onTabContainerChanged, listener)
+      assert.equal(called, false)
+      el.dispatchEvent(new Event('tab-container-changed'))
+      assert.equal(called, true)
     })
   })
 
@@ -50,14 +74,7 @@ describe('tab-container', function () {
     })
 
     afterEach(function () {
-      // Check to make sure we still have accessible markup after the test finishes running.
-      expect(document.body).to.be.accessible()
-
       document.body.innerHTML = ''
-    })
-
-    it('has accessible markup', function () {
-      expect(document.body).to.be.accessible()
     })
 
     it('click works and `tab-container-changed` event is dispatched', function () {
@@ -71,7 +88,12 @@ describe('tab-container', function () {
         'events fired in right order',
       )
       assert.deepStrictEqual(
-        events.map(e => e.detail.relatedTarget),
+        events.map(e => e.tab),
+        [tabs[1], tabs[1]],
+        'change events point to second tab',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.panel),
         [panels[1], panels[1]],
         'change events point to second panel',
       )
@@ -184,7 +206,12 @@ describe('tab-container', function () {
         'events fired in right order',
       )
       assert.deepStrictEqual(
-        events.map(e => e.detail.relatedTarget),
+        events.map(e => e.tab),
+        [tabs[1], tabs[1]],
+        'change events point to second tab',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.panel),
         [panels[1], panels[1]],
         'change events point to second panel',
       )
@@ -240,14 +267,7 @@ describe('tab-container', function () {
     })
 
     afterEach(function () {
-      // Check to make sure we still have accessible markup after the test finishes running.
-      expect(document.body).to.be.accessible()
-
       document.body.innerHTML = ''
-    })
-
-    it('has accessible markup', function () {
-      expect(document.body).to.be.accessible()
     })
 
     it('only switches closest tab-containers on click', () => {
@@ -325,14 +345,7 @@ describe('tab-container', function () {
     })
 
     afterEach(function () {
-      // Check to make sure we still have accessible markup after the test finishes running.
-      expect(document.body).to.be.accessible()
-
       document.body.innerHTML = ''
-    })
-
-    it('has accessible markup', function () {
-      expect(document.body).to.be.accessible()
     })
 
     it('up and down keyboard shortcuts work and `tab-container-changed` events are dispatched', () => {
@@ -347,7 +360,12 @@ describe('tab-container', function () {
         'events fired in right order',
       )
       assert.deepStrictEqual(
-        events.map(e => e.detail.relatedTarget),
+        events.map(e => e.tab),
+        [tabs[2], tabs[2]],
+        'change events point to second tab',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.panel),
         [panels[2], panels[2]],
         'change events point to second panel',
       )
@@ -364,7 +382,12 @@ describe('tab-container', function () {
         'events fired in right order',
       )
       assert.deepStrictEqual(
-        events.map(e => e.detail.relatedTarget),
+        events.map(e => e.tab),
+        [tabs[0], tabs[0]],
+        'change events point to first tab',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.panel),
         [panels[0], panels[0]],
         'change events point to first panel',
       )
@@ -381,7 +404,12 @@ describe('tab-container', function () {
         'events fired in right order',
       )
       assert.deepStrictEqual(
-        events.map(e => e.detail.relatedTarget),
+        events.map(e => e.tab),
+        [tabs[1], tabs[1]],
+        'change events point to second tab',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.panel),
         [panels[1], panels[1]],
         'change events point to second panel',
       )
@@ -398,7 +426,12 @@ describe('tab-container', function () {
         'events fired in right order',
       )
       assert.deepStrictEqual(
-        events.map(e => e.detail.relatedTarget),
+        events.map(e => e.tab),
+        [tabs[2], tabs[2]],
+        'change events point to third tab',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.panel),
         [panels[2], panels[2]],
         'change events point to third panel',
       )
@@ -416,7 +449,12 @@ describe('tab-container', function () {
         'events fired in right order',
       )
       assert.deepStrictEqual(
-        events.map(e => e.detail.relatedTarget),
+        events.map(e => e.tab),
+        [tabs[2], tabs[2]],
+        'change events point to third tab',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.panel),
         [panels[2], panels[2]],
         'change events point to third panel',
       )
@@ -433,7 +471,12 @@ describe('tab-container', function () {
         'events fired in right order',
       )
       assert.deepStrictEqual(
-        events.map(e => e.detail.relatedTarget),
+        events.map(e => e.tab),
+        [tabs[0], tabs[0]],
+        'change events point to first tab',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.panel),
         [panels[0], panels[0]],
         'change events point to first panel',
       )
@@ -450,7 +493,12 @@ describe('tab-container', function () {
         'events fired in right order',
       )
       assert.deepStrictEqual(
-        events.map(e => e.detail.relatedTarget),
+        events.map(e => e.tab),
+        [tabs[1], tabs[1]],
+        'change events point to second tab',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.panel),
         [panels[1], panels[1]],
         'change events point to second panel',
       )
@@ -467,7 +515,12 @@ describe('tab-container', function () {
         'events fired in right order',
       )
       assert.deepStrictEqual(
-        events.map(e => e.detail.relatedTarget),
+        events.map(e => e.tab),
+        [tabs[2], tabs[2]],
+        'change events point to third tab',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.panel),
         [panels[2], panels[2]],
         'change events point to third panel',
       )

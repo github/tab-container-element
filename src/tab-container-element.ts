@@ -1,3 +1,5 @@
+const HTMLElement = globalThis.HTMLElement || (null as unknown as (typeof window)['HTMLElement'])
+
 type IncrementKeyCode = 'ArrowRight' | 'ArrowDown'
 type DecrementKeyCode = 'ArrowUp' | 'ArrowLeft'
 
@@ -5,6 +7,30 @@ function getTabs(el: TabContainerElement): HTMLElement[] {
   return Array.from(el.querySelectorAll<HTMLElement>('[role="tablist"] [role="tab"]')).filter(
     tab => tab instanceof HTMLElement && tab.closest(el.tagName) === el,
   )
+}
+
+export class TabContainerChangeEvent extends Event {
+  constructor(type: string, {tab, panel, ...init}: EventInit & {tab?: Element; panel?: Element}) {
+    super(type, init)
+    this.#tab = tab || null
+    this.#panel = panel || null
+  }
+
+  get detail() {
+    // eslint-disable-next-line no-console
+    console.warn('TabContainerElement.detail is deprecated, please use .panel instead')
+    return {relatedTarget: this.#panel}
+  }
+
+  #panel: Element | null = null
+  get panel(): Element | null {
+    return this.#panel
+  }
+
+  #tab: Element | null = null
+  get tab(): Element | null {
+    return this.#tab
+  }
 }
 
 function getNavigationKeyCodes(vertical: boolean): [IncrementKeyCode[], DecrementKeyCode[]] {
@@ -22,6 +48,42 @@ export class TabContainerElement extends HTMLElement {
   static define(tag = 'tab-container', registry = customElements) {
     registry.define(tag, this)
     return this
+  }
+
+  #onTabContainerChange: ((event: TabContainerChangeEvent) => void) | null = null
+  get onTabContainerChange() {
+    return this.#onTabContainerChange
+  }
+
+  set onTabContainerChange(listener: ((event: TabContainerChangeEvent) => void) | null) {
+    if (this.#onTabContainerChange) {
+      this.removeEventListener(
+        'tab-container-change',
+        this.#onTabContainerChange as unknown as EventListenerOrEventListenerObject,
+      )
+    }
+    this.#onTabContainerChange = typeof listener === 'object' || typeof listener === 'function' ? listener : null
+    if (typeof listener === 'function') {
+      this.addEventListener('tab-container-change', listener as unknown as EventListenerOrEventListenerObject)
+    }
+  }
+
+  #onTabContainerChanged: ((event: TabContainerChangeEvent) => void) | null = null
+  get onTabContainerChanged() {
+    return this.#onTabContainerChanged
+  }
+
+  set onTabContainerChanged(listener: ((event: TabContainerChangeEvent) => void) | null) {
+    if (this.#onTabContainerChanged) {
+      this.removeEventListener(
+        'tab-container-changed',
+        this.#onTabContainerChanged as unknown as EventListenerOrEventListenerObject,
+      )
+    }
+    this.#onTabContainerChanged = typeof listener === 'object' || typeof listener === 'function' ? listener : null
+    if (typeof listener === 'function') {
+      this.addEventListener('tab-container-changed', listener as unknown as EventListenerOrEventListenerObject)
+    }
   }
 
   connectedCallback(): void {
@@ -99,10 +161,11 @@ export class TabContainerElement extends HTMLElement {
     const selectedPanel = panels[index]
 
     const cancelled = !this.dispatchEvent(
-      new CustomEvent('tab-container-change', {
+      new TabContainerChangeEvent('tab-container-change', {
         bubbles: true,
         cancelable: true,
-        detail: {relatedTarget: selectedPanel},
+        tab: selectedTab,
+        panel: selectedPanel,
       }),
     )
     if (cancelled) return
@@ -124,9 +187,10 @@ export class TabContainerElement extends HTMLElement {
     selectedPanel.hidden = false
 
     this.dispatchEvent(
-      new CustomEvent('tab-container-changed', {
+      new TabContainerChangeEvent('tab-container-changed', {
         bubbles: true,
-        detail: {relatedTarget: selectedPanel},
+        tab: selectedTab,
+        panel: selectedPanel,
       }),
     )
   }
