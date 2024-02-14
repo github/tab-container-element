@@ -14,6 +14,30 @@ describe('tab-container', function () {
     })
   })
 
+  describe('events', function () {
+    it('has an onTabContainerChange property for the change event', function () {
+      const el = document.createElement('tab-container')
+      let called = false
+      const listener = () => (called = true)
+      el.onTabContainerChange = listener
+      assert.equal(el.onTabContainerChange, listener)
+      assert.equal(called, false)
+      el.dispatchEvent(new Event('tab-container-change'))
+      assert.equal(called, true)
+    })
+
+    it('has an onTabContainerChanged property for the changed event', function () {
+      const el = document.createElement('tab-container')
+      let called = false
+      const listener = () => (called = true)
+      el.onTabContainerChanged = listener
+      assert.equal(el.onTabContainerChanged, listener)
+      assert.equal(called, false)
+      el.dispatchEvent(new Event('tab-container-changed'))
+      assert.equal(called, true)
+    })
+  })
+
   describe('after tree insertion', function () {
     beforeEach(function () {
       document.body.innerHTML = `
@@ -54,7 +78,8 @@ describe('tab-container', function () {
       let counter = 0
       tabContainer.addEventListener('tab-container-changed', event => {
         counter++
-        assert.equal(event.detail.relatedTarget, panels[1])
+        assert.equal(event.tab, tabs[1])
+        assert.equal(event.panel, panels[1])
       })
 
       tabs[1].click()
@@ -112,7 +137,8 @@ describe('tab-container', function () {
       let counter = 0
       tabContainer.addEventListener('tab-container-change', event => {
         counter++
-        assert.equal(event.detail.relatedTarget, panels[1])
+        assert.equal(event.tab, tabs[1])
+        assert.equal(event.panel, panels[1])
         event.preventDefault()
       })
 
@@ -167,7 +193,8 @@ describe('tab-container', function () {
       let counter = 0
       tabContainer.addEventListener('tab-container-changed', event => {
         counter++
-        assert.equal(event.detail.relatedTarget, panels[1])
+        assert.equal(event.tab, tabs[1])
+        assert.equal(event.panel, panels[1])
       })
 
       tabContainer.selectTab(1)
