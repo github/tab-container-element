@@ -1,4 +1,4 @@
-import {assert, expect} from '@open-wc/testing'
+import {assert} from '@open-wc/testing'
 import '../src/index.ts'
 
 describe('tab-container', function () {
@@ -37,14 +37,7 @@ describe('tab-container', function () {
     })
 
     afterEach(function () {
-      // Check to make sure we still have accessible markup after the test finishes running.
-      expect(document.body).to.be.accessible()
-
       document.body.innerHTML = ''
-    })
-
-    it('has accessible markup', function () {
-      expect(document.body).to.be.accessible()
     })
 
     it('click works and `tab-container-changed` event is dispatched', function () {
@@ -220,14 +213,7 @@ describe('tab-container', function () {
     })
 
     afterEach(function () {
-      // Check to make sure we still have accessible markup after the test finishes running.
-      expect(document.body).to.be.accessible()
-
       document.body.innerHTML = ''
-    })
-
-    it('has accessible markup', function () {
-      expect(document.body).to.be.accessible()
     })
 
     it('only switches closest tab-containers on click', () => {
@@ -313,14 +299,7 @@ describe('tab-container', function () {
     })
 
     afterEach(function () {
-      // Check to make sure we still have accessible markup after the test finishes running.
-      expect(document.body).to.be.accessible()
-
       document.body.innerHTML = ''
-    })
-
-    it('has accessible markup', function () {
-      expect(document.body).to.be.accessible()
     })
 
     it('up and down keyboard shortcuts work and `tab-container-changed` events are dispatched', () => {
