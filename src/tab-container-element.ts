@@ -1,11 +1,5 @@
 const HTMLElement = globalThis.HTMLElement || (null as unknown as (typeof window)['HTMLElement'])
 
-function getTabs(el: TabContainerElement): HTMLElement[] {
-  return Array.from(el.querySelectorAll<HTMLElement>('[role="tablist"] [role="tab"]')).filter(
-    tab => tab instanceof HTMLElement && tab.closest(el.tagName) === el,
-  )
-}
-
 export class TabContainerChangeEvent extends Event {
   constructor(type: string, {tab, panel, ...init}: EventInit & {tab?: Element; panel?: Element}) {
     super(type, init)
@@ -72,10 +66,20 @@ export class TabContainerElement extends HTMLElement {
     }
   }
 
+  get #tabList() {
+    return this.querySelector<HTMLElement>('[role=tablist]')
+  }
+
+  get #tabs() {
+    return Array.from(this.#tabList?.querySelectorAll<HTMLElement>('[role="tab"]') || []).filter(
+      tab => tab instanceof HTMLElement && tab.closest(this.tagName) === this,
+    )
+  }
+
   connectedCallback(): void {
     this.addEventListener('keydown', this)
     this.addEventListener('click', this)
-    for (const tab of getTabs(this)) {
+    for (const tab of this.#tabs) {
       if (!tab.hasAttribute('aria-selected')) {
         tab.setAttribute('aria-selected', 'false')
       }
@@ -97,7 +101,7 @@ export class TabContainerElement extends HTMLElement {
   #handleKeydown(event: KeyboardEvent) {
     const tab = (event.target as HTMLElement)?.closest?.('[role="tab"]')
     if (!tab) return
-    const tabs = getTabs(this)
+    const tabs = this.#tabs
     if (!tabs.includes(tab as HTMLElement)) return
 
     const currentIndex = tabs.indexOf(tabs.find(e => e.matches('[aria-selected="true"]'))!)
@@ -125,13 +129,13 @@ export class TabContainerElement extends HTMLElement {
   #handleClick(event: MouseEvent) {
     const tab = (event.target as HTMLElement)?.closest?.('[role=tab]')
     if (!tab) return
-    const tabs = getTabs(this)
+    const tabs = this.#tabs
     const index = tabs.indexOf(tab as HTMLElement)
     if (index >= 0) this.selectTab(index)
   }
 
   selectTab(index: number): void {
-    const tabs = getTabs(this)
+    const tabs = this.#tabs
     const panels = Array.from(this.querySelectorAll<HTMLElement>('[role="tabpanel"]')).filter(
       panel => panel.closest(this.tagName) === this,
     )
