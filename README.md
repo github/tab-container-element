@@ -16,11 +16,9 @@ import '@github/tab-container-element'
 
 ```html
 <tab-container>
-  <div role="tablist">
-    <button type="button" id="tab-one" role="tab" aria-selected="true">Tab one</button>
-    <button type="button" id="tab-two" role="tab" tabindex="-1">Tab two</button>
-    <button type="button" id="tab-three" role="tab" tabindex="-1">Tab three</button>
-  </div>
+  <button type="button" id="tab-one" role="tab" aria-selected="true">Tab one</button>
+  <button type="button" id="tab-two" role="tab" tabindex="-1">Tab two</button>
+  <button type="button" id="tab-three" role="tab" tabindex="-1">Tab three</button>
   <div role="tabpanel" aria-labelledby="tab-one">
     Panel 1
   </div>
@@ -35,8 +33,17 @@ import '@github/tab-container-element'
 
 ### Events
 
-- `tab-container-change` (bubbles, cancelable): fired on `<tab-container>` before a new tab is selected and visibility is updated. `event.detail.relatedTarget` is the tab panel that will be selected if the event isn't cancelled.
-- `tab-container-changed` (bubbles): fired on `<tab-container>` after a new tab is selected and visibility is updated. `event.detail.relatedTarget` is the newly visible tab panel.
+- `tab-container-change` (bubbles, cancelable): fired on `<tab-container>` before a new tab is selected and visibility is updated. `event.tab` is the tab that will be focused and `tab.panel` is the panel that will be shown if the event isn't cancelled.
+- `tab-container-changed` (bubbles): fired on `<tab-container>` after a new tab is selected and visibility is updated. `event.tab` is the tab that is now active (and will be focused right after this event) and `event.panel` is the newly visible tab panel.
+
+### Parts
+
+- `::part(tablist)` is the container which wraps all tabs. This element appears in ATs as it is `role=tablist`.
+- `::part(panel)` is the container housing the currently active tabpanel.
+- `::part(before-tabs)` is the container housing any elements that appear before the first `role=tab`. This also can be directly slotted with `slot=before-tabs`. This container lives outside the element with role=tablist to adhere to ARIA guidelines.
+- `::part(after-tabs)` is the container housing any elements that appear after the last `role=tab`. This also can be directly slotted with `slot=after-tabs`. This container lives outside the element with role=tablist to adhere to ARIA guidelines.
+- `::part(after-panels)` is the container housing any elements that appear after the last `role=tabpanel`. This can be useful if you want to add a visual treatment to the container but have content always appear visually below the active panel.
+
 
 ### When tab panel contents are controls
 
@@ -46,10 +53,33 @@ In those cases, apply `data-tab-container-no-tabstop` to the `tabpanel` element.
 
 ```html
 <tab-container>
-  <div role="tablist">
-    <button type="button" id="tab-one" role="tab" aria-selected="true">Tab one</button>
-    <button type="button" id="tab-two" role="tab" tabindex="-1">Tab two</button>
+  <button type="button" id="tab-one" role="tab" aria-selected="true">Tab one</button>
+  <button type="button" id="tab-two" role="tab" tabindex="-1">Tab two</button>
+  <div role="tabpanel" aria-labelledby="tab-one" data-tab-container-no-tabstop>
+    <ul role="menu" aria-label="Branches">
+      <li tabindex="0">branch-one</li>
+      <li tabindex="0">branch-two</li>
+    </ul>
   </div>
+  <div role="tabpanel" aria-labelledby="tab-two" data-tab-container-no-tabstop hidden>
+    <ul role="menu" aria-label="Commits">
+      <li tabindex="0">Commit One</li>
+      <li tabindex="0">Commit Two</li>
+    </ul>
+  </div>
+</tab-container>
+```
+
+### Vertical tabs
+
+If `<tab-container>` is given the `vertical` attribute it will apply the `aria-orientation=vertical` attribute to the tablist. This will present to ATs as a vertical tablist, and you can use the attribute to style the tabs accordingly.
+
+In those cases, apply `data-tab-container-no-tabstop` to the `tabpanel` element.
+
+```html
+<tab-container vertical>
+  <button type="button" id="tab-one" role="tab" aria-selected="true">Tab one</button>
+  <button type="button" id="tab-two" role="tab" tabindex="-1">Tab two</button>
   <div role="tabpanel" aria-labelledby="tab-one" data-tab-container-no-tabstop>
     <ul role="menu" aria-label="Branches">
       <li tabindex="0">branch-one</li>

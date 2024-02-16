@@ -10,7 +10,24 @@
 
     <h1>Tab Container Examples</h1>
     
-    <h2>Horizontal</h2>
+    <h2>Horizontal (shadow tablist)</h2>
+
+    <tab-container>
+      <button type="button" id="tab-one" role="tab">Tab one</button>
+      <button type="button" id="tab-two" role="tab">Tab two</button>
+      <button type="button" id="tab-three" role="tab">Tab three</button>
+      <div role="tabpanel" aria-labelledby="tab-one">
+        Panel 1
+      </div>
+      <div role="tabpanel" aria-labelledby="tab-two" hidden>
+        Panel 2
+      </div>
+      <div role="tabpanel" aria-labelledby="tab-three" hidden>
+        Panel 3
+      </div>
+    </tab-container>
+    
+    <h2>Horizontal (custom tablist)</h2>
 
     <tab-container>
       <div role="tablist" aria-label="Horizontal Tabs Example">
@@ -29,7 +46,25 @@
       </div>
     </tab-container>
 
-    <h2>Vertical</h2>
+    <h2>Vertical (shadow tablist)</h2>
+
+    <tab-container>
+      <button type="button" id="tab-one" role="tab">Tab one</button>
+      <button type="button" id="tab-two" role="tab">Tab two</button>
+      <button type="button" id="tab-three" role="tab">Tab three</button>
+      <div role="tabpanel" aria-labelledby="tab-one">
+        Panel 1
+      </div>
+      <div role="tabpanel" aria-labelledby="tab-two" hidden>
+        Panel 2
+      </div>
+      <div role="tabpanel" aria-labelledby="tab-three" hidden>
+        Panel 3
+      </div>
+    </tab-container>
+
+
+    <h2>Vertical (custom tablist)</h2>
 
     <tab-container>
       <div role="tablist" aria-label="Vertical Tabs Example" aria-orientation="vertical">
@@ -51,16 +86,12 @@
     <h2>Panel with extra buttons</h2>
 
     <tab-container>
-      <div style="display: flex">
-        <button>Left button, not a tab!</button>
-        <button>2nd Left button, not a tab!</button>
-        <div role="tablist" aria-label="Tabs Example with extra buttons">
-          <button type="button" id="tab-one" role="tab">Tab one</button>
-          <button type="button" id="tab-two" role="tab">Tab two</button>
-          <button type="button" id="tab-three" role="tab">Tab three</button>
-        </div>
-        <button>Right button, not a tab!</button>
-      </div>
+      <button>Left button, not a tab!</button>
+      <button type="button" id="tab-one" role="tab">Tab one</button>
+      <button type="button" id="tab-two" role="tab">Tab two</button>
+      <button type="button" id="tab-three" role="tab">Tab three</button>
+      <button>Right button, not a tab!</button>
+      <button slot="before-tabs">2nd Left button, not a tab!</button>
       <div role="tabpanel" aria-labelledby="tab-one">
         Panel 1
       </div>
