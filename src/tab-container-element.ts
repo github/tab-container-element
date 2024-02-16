@@ -86,6 +86,28 @@ export class TabContainerElement extends HTMLElement {
     }
   }
 
+  connectedCallback(): void {
+    this.addEventListener('keydown', this)
+    this.addEventListener('click', this)
+    for (const tab of getTabs(this)) {
+      if (!tab.hasAttribute('aria-selected')) {
+        tab.setAttribute('aria-selected', 'false')
+      }
+      if (!tab.hasAttribute('tabindex')) {
+        if (tab.getAttribute('aria-selected') === 'true') {
+          tab.setAttribute('tabindex', '0')
+        } else {
+          tab.setAttribute('tabindex', '-1')
+        }
+      }
+    }
+  }
+
+  handleEvent(event: Event) {
+    if (event.type === 'click') return this.#handleClick(event as MouseEvent)
+    if (event.type === 'keydown') return this.#handleKeydown(event as KeyboardEvent)
+  }
+
   #handleKeydown(event: KeyboardEvent) {
     const target = event.target
     if (!(target instanceof HTMLElement)) return
@@ -129,27 +151,6 @@ export class TabContainerElement extends HTMLElement {
     this.selectTab(index)
   }
 
-  connectedCallback(): void {
-    this.addEventListener('keydown', this)
-    this.addEventListener('click', this)
-    for (const tab of getTabs(this)) {
-      if (!tab.hasAttribute('aria-selected')) {
-        tab.setAttribute('aria-selected', 'false')
-      }
-      if (!tab.hasAttribute('tabindex')) {
-        if (tab.getAttribute('aria-selected') === 'true') {
-          tab.setAttribute('tabindex', '0')
-        } else {
-          tab.setAttribute('tabindex', '-1')
-        }
-      }
-    }
-  }
-
-  handleEvent(event: Event) {
-    if (event.type === 'click') return this.#handleClick(event as MouseEvent)
-    if (event.type === 'keydown') return this.#handleKeydown(event as KeyboardEvent)
-  }
 
   selectTab(index: number): void {
     const tabs = getTabs(this)
