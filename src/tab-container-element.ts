@@ -3,12 +3,6 @@ const HTMLElement = globalThis.HTMLElement || (null as unknown as (typeof window
 type IncrementKeyCode = 'ArrowRight' | 'ArrowDown'
 type DecrementKeyCode = 'ArrowUp' | 'ArrowLeft'
 
-function getTabs(el: TabContainerElement): HTMLElement[] {
-  return Array.from(el.querySelectorAll<HTMLElement>('[role="tablist"] [role="tab"]')).filter(
-    tab => tab instanceof HTMLElement && tab.closest(el.tagName) === el,
-  )
-}
-
 export class TabContainerChangeEvent extends Event {
   constructor(type: string, {tab, panel, ...init}: EventInit & {tab?: Element; panel?: Element}) {
     super(type, init)
@@ -86,13 +80,19 @@ export class TabContainerElement extends HTMLElement {
     }
   }
 
+  get #tabs(): HTMLElement[] {
+    return Array.from(this.querySelectorAll<HTMLElement>('[role="tablist"] [role="tab"]')).filter(
+      tab => tab instanceof HTMLElement && tab.closest(this.tagName) === this,
+    )
+  }
+
   connectedCallback(): void {
     this.addEventListener('keydown', (event: KeyboardEvent) => {
       const target = event.target
       if (!(target instanceof HTMLElement)) return
       if (target.closest(this.tagName) !== this) return
       if (target.getAttribute('role') !== 'tab' && !target.closest('[role="tablist"]')) return
-      const tabs = getTabs(this)
+      const tabs = this.#tabs
       const currentIndex = tabs.indexOf(tabs.find(tab => tab.matches('[aria-selected="true"]'))!)
       const [incrementKeys, decrementKeys] = getNavigationKeyCodes(
         target.closest('[role="tablist"]')?.getAttribute('aria-orientation') === 'vertical',
@@ -116,7 +116,7 @@ export class TabContainerElement extends HTMLElement {
     })
 
     this.addEventListener('click', (event: MouseEvent) => {
-      const tabs = getTabs(this)
+      const tabs = this.#tabs
 
       if (!(event.target instanceof Element)) return
       if (event.target.closest(this.tagName) !== this) return
@@ -130,7 +130,7 @@ export class TabContainerElement extends HTMLElement {
       this.selectTab(index)
     })
 
-    for (const tab of getTabs(this)) {
+    for (const tab of this.#tabs) {
       if (!tab.hasAttribute('aria-selected')) {
         tab.setAttribute('aria-selected', 'false')
       }
@@ -145,7 +145,7 @@ export class TabContainerElement extends HTMLElement {
   }
 
   selectTab(index: number): void {
-    const tabs = getTabs(this)
+    const tabs = this.#tabs
     const panels = Array.from(this.querySelectorAll<HTMLElement>('[role="tabpanel"]')).filter(
       panel => panel.closest(this.tagName) === this,
     )
