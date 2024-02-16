@@ -137,20 +137,12 @@ export class TabContainerElement extends HTMLElement {
   }
 
   #handleClick(event: MouseEvent) {
+    const tab = (event.target as HTMLElement)?.closest?.('[role=tab]')
+    if (!tab) return
     const tabs = getTabs(this)
-
-    if (!(event.target instanceof Element)) return
-    if (event.target.closest(this.tagName) !== this) return
-
-    const tab = event.target.closest('[role="tab"]')
-    if (!(tab instanceof HTMLElement) || !tab.closest('[role="tablist"]')) {
-      return
-    }
-
-    const index = tabs.indexOf(tab)
-    this.selectTab(index)
+    const index = tabs.indexOf(tab as HTMLElement)
+    if (index >= 0) this.selectTab(index)
   }
-
 
   selectTab(index: number): void {
     const tabs = getTabs(this)
