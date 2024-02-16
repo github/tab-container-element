@@ -209,6 +209,13 @@ export class TabContainerElement extends HTMLElement {
     if (index >= 0) this.selectTab(index)
   }
 
+  #reflectAttributeToShadow(name: string, node: Element) {
+    if (this.hasAttribute(name)) {
+      node.setAttribute(name, this.getAttribute(name)!)
+      this.removeAttribute(name)
+    }
+  }
+
   selectTab(index: number): void {
     if (!this.#setupComplete) {
       const tabListSlot = this.#tabListSlot
@@ -221,14 +228,8 @@ export class TabContainerElement extends HTMLElement {
         tabListSlot.style.display = 'block'
       }
       const tabList = this.#tabList
-      if (this.hasAttribute('aria-description')) {
-        tabList.setAttribute('aria-description', this.getAttribute('aria-description')!)
-        this.removeAttribute('aria-description')
-      }
-      if (this.hasAttribute('aria-label')) {
-        tabList.setAttribute('aria-label', this.getAttribute('aria-label')!)
-        this.removeAttribute('aria-label')
-      }
+      this.#reflectAttributeToShadow('aria-description', tabList)
+      this.#reflectAttributeToShadow('aria-label', tabList)
       if (this.vertical) {
         this.#tabList.setAttribute('aria-orientation', 'vertical')
       }
