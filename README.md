@@ -40,8 +40,8 @@ import '@github/tab-container-element'
 
 - `::part(tablist)` is the container which wraps all tabs. This element appears in ATs as it is `role=tablist`.
 - `::part(panel)` is the container housing the currently active tabpanel.
-- `::part(before-tabs)` is the container housing any elements that appear before the first `role=tab`. This also can be directly slotted with `slot=before-tabs`.
-- `::part(after-tabs)` is the container housing any elements that appear after the last `role=tab`. This also can be directly slotted with `slot=after-tabs`.
+- `::part(before-tabs)` is the container housing any elements that appear before the first `role=tab`. This also can be directly slotted with `slot=before-tabs`. This container lives outside the element with role=tablist to adhere to ARIA guidelines.
+- `::part(after-tabs)` is the container housing any elements that appear after the last `role=tab`. This also can be directly slotted with `slot=after-tabs`. This container lives outside the element with role=tablist to adhere to ARIA guidelines.
 - `::part(after-panels)` is the container housing any elements that appear after the last `role=tabpanel`. This can be useful if you want to add a visual treatment to the container but have content always appear visually below the active panel.
 
 
