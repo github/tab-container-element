@@ -80,8 +80,12 @@ export class TabContainerElement extends HTMLElement {
     }
   }
 
-  get #tabs(): HTMLElement[] {
-    return Array.from(this.querySelectorAll<HTMLElement>('[role="tablist"] [role="tab"]')).filter(
+  get #tabList() {
+    return this.querySelector<HTMLElement>('[role=tablist]')
+  }
+
+  get #tabs() {
+    return Array.from(this.#tabList?.querySelectorAll<HTMLElement>('[role="tab"]') || []).filter(
       tab => tab instanceof HTMLElement && tab.closest(this.tagName) === this,
     )
   }
