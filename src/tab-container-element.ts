@@ -1,8 +1,5 @@
 const HTMLElement = globalThis.HTMLElement || (null as unknown as (typeof window)['HTMLElement'])
 
-type IncrementKeyCode = 'ArrowRight' | 'ArrowDown'
-type DecrementKeyCode = 'ArrowUp' | 'ArrowLeft'
-
 function getTabs(el: TabContainerElement): HTMLElement[] {
   return Array.from(el.querySelectorAll<HTMLElement>('[role="tablist"] [role="tab"]')).filter(
     tab => tab instanceof HTMLElement && tab.closest(el.tagName) === el,
@@ -30,17 +27,6 @@ export class TabContainerChangeEvent extends Event {
   #tab: Element | null = null
   get tab(): Element | null {
     return this.#tab
-  }
-}
-
-function getNavigationKeyCodes(vertical: boolean): [IncrementKeyCode[], DecrementKeyCode[]] {
-  if (vertical) {
-    return [
-      ['ArrowDown', 'ArrowRight'],
-      ['ArrowUp', 'ArrowLeft'],
-    ]
-  } else {
-    return [['ArrowRight'], ['ArrowLeft']]
   }
 }
 
@@ -87,49 +73,8 @@ export class TabContainerElement extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.addEventListener('keydown', (event: KeyboardEvent) => {
-      const target = event.target
-      if (!(target instanceof HTMLElement)) return
-      if (target.closest(this.tagName) !== this) return
-      if (target.getAttribute('role') !== 'tab' && !target.closest('[role="tablist"]')) return
-      const tabs = getTabs(this)
-      const currentIndex = tabs.indexOf(tabs.find(tab => tab.matches('[aria-selected="true"]'))!)
-      const [incrementKeys, decrementKeys] = getNavigationKeyCodes(
-        target.closest('[role="tablist"]')?.getAttribute('aria-orientation') === 'vertical',
-      )
-
-      if (incrementKeys.some(code => event.code === code)) {
-        let index = currentIndex + 1
-        if (index >= tabs.length) index = 0
-        this.selectTab(index)
-      } else if (decrementKeys.some(code => event.code === code)) {
-        let index = currentIndex - 1
-        if (index < 0) index = tabs.length - 1
-        this.selectTab(index)
-      } else if (event.code === 'Home') {
-        this.selectTab(0)
-        event.preventDefault()
-      } else if (event.code === 'End') {
-        this.selectTab(tabs.length - 1)
-        event.preventDefault()
-      }
-    })
-
-    this.addEventListener('click', (event: MouseEvent) => {
-      const tabs = getTabs(this)
-
-      if (!(event.target instanceof Element)) return
-      if (event.target.closest(this.tagName) !== this) return
-
-      const tab = event.target.closest('[role="tab"]')
-      if (!(tab instanceof HTMLElement) || !tab.closest('[role="tablist"]')) {
-        return
-      }
-
-      const index = tabs.indexOf(tab)
-      this.selectTab(index)
-    })
-
+    this.addEventListener('keydown', this)
+    this.addEventListener('click', this)
     for (const tab of getTabs(this)) {
       if (!tab.hasAttribute('aria-selected')) {
         tab.setAttribute('aria-selected', 'false')
@@ -142,6 +87,47 @@ export class TabContainerElement extends HTMLElement {
         }
       }
     }
+  }
+
+  handleEvent(event: Event) {
+    if (event.type === 'click') return this.#handleClick(event as MouseEvent)
+    if (event.type === 'keydown') return this.#handleKeydown(event as KeyboardEvent)
+  }
+
+  #handleKeydown(event: KeyboardEvent) {
+    const tab = (event.target as HTMLElement)?.closest?.('[role="tab"]')
+    if (!tab) return
+    const tabs = getTabs(this)
+    if (!tabs.includes(tab as HTMLElement)) return
+
+    const currentIndex = tabs.indexOf(tabs.find(e => e.matches('[aria-selected="true"]'))!)
+    const vertical = tab.closest('[role="tablist"]')?.getAttribute('aria-orientation') === 'vertical'
+    const prevTab = event.code === 'ArrowLeft' || (vertical && event.code === 'ArrowUp')
+    const nextTab = event.code === 'ArrowRight' || (vertical && event.code === 'ArrowDown')
+
+    if (nextTab) {
+      let index = currentIndex + 1
+      if (index >= tabs.length) index = 0
+      this.selectTab(index)
+    } else if (prevTab) {
+      let index = currentIndex - 1
+      if (index < 0) index = tabs.length - 1
+      this.selectTab(index)
+    } else if (event.code === 'Home') {
+      this.selectTab(0)
+      event.preventDefault()
+    } else if (event.code === 'End') {
+      this.selectTab(tabs.length - 1)
+      event.preventDefault()
+    }
+  }
+
+  #handleClick(event: MouseEvent) {
+    const tab = (event.target as HTMLElement)?.closest?.('[role=tab]')
+    if (!tab) return
+    const tabs = getTabs(this)
+    const index = tabs.indexOf(tab as HTMLElement)
+    if (index >= 0) this.selectTab(index)
   }
 
   selectTab(index: number): void {
