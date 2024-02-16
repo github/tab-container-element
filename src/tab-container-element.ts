@@ -101,7 +101,7 @@ export class TabContainerElement extends HTMLElement {
   #handleKeydown(event: KeyboardEvent) {
     const tab = (event.target as HTMLElement)?.closest?.('[role="tab"]')
     if (!tab) return
-    const tabs = getTabs(this)
+    const tabs = this.#tabs
     if (!tabs.includes(tab as HTMLElement)) return
 
     const currentIndex = tabs.indexOf(tabs.find(e => e.matches('[aria-selected="true"]'))!)
@@ -129,7 +129,7 @@ export class TabContainerElement extends HTMLElement {
   #handleClick(event: MouseEvent) {
     const tab = (event.target as HTMLElement)?.closest?.('[role=tab]')
     if (!tab) return
-    const tabs = getTabs(this)
+    const tabs = this.#tabs
     const index = tabs.indexOf(tab as HTMLElement)
     if (index >= 0) this.selectTab(index)
   }
