@@ -76,21 +76,17 @@ export class TabContainerElement extends HTMLElement {
     )
   }
 
+  #setup = false
   connectedCallback(): void {
     this.addEventListener('keydown', this)
     this.addEventListener('click', this)
-    for (const tab of this.#tabs) {
-      if (!tab.hasAttribute('aria-selected')) {
-        tab.setAttribute('aria-selected', 'false')
-      }
-      if (!tab.hasAttribute('tabindex')) {
-        if (tab.getAttribute('aria-selected') === 'true') {
-          tab.setAttribute('tabindex', '0')
-        } else {
-          tab.setAttribute('tabindex', '-1')
-        }
-      }
-    }
+    this.selectTab(
+      Math.max(
+        this.#tabs.findIndex(el => el.matches('[aria-selected=true]')),
+        0,
+      ),
+    )
+    this.#setup = true
   }
 
   handleEvent(event: Event) {
@@ -150,15 +146,17 @@ export class TabContainerElement extends HTMLElement {
     const selectedTab = tabs[index]
     const selectedPanel = panels[index]
 
-    const cancelled = !this.dispatchEvent(
-      new TabContainerChangeEvent('tab-container-change', {
-        bubbles: true,
-        cancelable: true,
-        tab: selectedTab,
-        panel: selectedPanel,
-      }),
-    )
-    if (cancelled) return
+    if (this.#setup) {
+      const cancelled = !this.dispatchEvent(
+        new TabContainerChangeEvent('tab-container-change', {
+          bubbles: true,
+          cancelable: true,
+          tab: selectedTab,
+          panel: selectedPanel,
+        }),
+      )
+      if (cancelled) return
+    }
 
     for (const tab of tabs) {
       tab.setAttribute('aria-selected', 'false')
@@ -173,15 +171,17 @@ export class TabContainerElement extends HTMLElement {
 
     selectedTab.setAttribute('aria-selected', 'true')
     selectedTab.setAttribute('tabindex', '0')
-    selectedTab.focus()
     selectedPanel.hidden = false
 
-    this.dispatchEvent(
-      new TabContainerChangeEvent('tab-container-changed', {
-        bubbles: true,
-        tab: selectedTab,
-        panel: selectedPanel,
-      }),
-    )
+    if (this.#setup) {
+      selectedTab.focus()
+      this.dispatchEvent(
+        new TabContainerChangeEvent('tab-container-changed', {
+          bubbles: true,
+          tab: selectedTab,
+          panel: selectedPanel,
+        }),
+      )
+    }
   }
 }
