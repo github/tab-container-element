@@ -123,7 +123,7 @@ export class TabContainerElement extends HTMLElement {
     }
   }
 
-  #setup = false
+  #setupComplete = false
   #internals!: ElementInternals | null
   connectedCallback(): void {
     this.#internals ||= this.attachInternals ? this.attachInternals() : null
@@ -158,7 +158,7 @@ export class TabContainerElement extends HTMLElement {
         0,
       ),
     )
-    this.#setup = true
+    this.#setupComplete = true
   }
 
   attributeChangedCallback(name: string) {
@@ -210,7 +210,7 @@ export class TabContainerElement extends HTMLElement {
   }
 
   selectTab(index: number): void {
-    if (!this.#setup) {
+    if (!this.#setupComplete) {
       const tabListSlot = this.#tabListSlot
       const customTabList = this.querySelector('[role=tablist]')
       if (customTabList && customTabList.closest(this.tagName) === this) {
@@ -273,7 +273,7 @@ export class TabContainerElement extends HTMLElement {
     const selectedTab = tabs[index]
     const selectedPanel = panels[index]
 
-    if (this.#setup) {
+    if (this.#setupComplete) {
       const cancelled = !this.dispatchEvent(
         new TabContainerChangeEvent('tab-container-change', {
           bubbles: true,
@@ -300,7 +300,7 @@ export class TabContainerElement extends HTMLElement {
     this.#panelSlot.assign(selectedPanel)
     selectedPanel.hidden = false
 
-    if (this.#setup) {
+    if (this.#setupComplete) {
       selectedTab.focus()
       this.dispatchEvent(
         new TabContainerChangeEvent('tab-container-changed', {
