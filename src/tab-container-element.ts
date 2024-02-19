@@ -152,12 +152,8 @@ export class TabContainerElement extends HTMLElement {
 
     this.addEventListener('keydown', this)
     this.addEventListener('click', this)
-    this.selectTab(
-      Math.max(
-        this.#tabs.findIndex(el => el.matches('[aria-selected=true]')),
-        0,
-      ),
-    )
+
+    this.selectTab(-1)
     this.#setupComplete = true
   }
 
@@ -257,6 +253,8 @@ export class TabContainerElement extends HTMLElement {
       this.#beforeTabsSlot.assign(...beforeSlotted)
       this.#afterTabsSlot.assign(...afterTabSlotted)
       this.#afterPanelsSlot.assign(...afterSlotted)
+      const defaultIndex = this.#tabs.findIndex(el => el.matches('[aria-selected=true]'))
+      index = index >= 0 ? index : Math.max(0, defaultIndex)
     }
 
     const tabs = this.#tabs
