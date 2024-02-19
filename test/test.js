@@ -63,12 +63,8 @@ describe('tab-container', function () {
         </div>
       </tab-container>
       `
-      tabContainer = document.querySelector('tab-container')
       tabs = Array.from(document.querySelectorAll('button'))
       panels = Array.from(document.querySelectorAll('[role="tabpanel"]'))
-      events = []
-      tabContainer.addEventListener('tab-container-change', e => events.push(e))
-      tabContainer.addEventListener('tab-container-changed', e => events.push(e))
     })
 
     afterEach(function () {
