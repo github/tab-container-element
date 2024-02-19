@@ -31,6 +31,8 @@ import '@github/tab-container-element'
 </tab-container>
 ```
 
+If none of the tabs have `aria-selected=true`, then the first tab will be selected automatically. You can also add the `default-tab=N` attribute to avoid having to set `aria-selected=true` on the desired tab.
+
 ### Events
 
 - `tab-container-change` (bubbles, cancelable): fired on `<tab-container>` before a new tab is selected and visibility is updated. `event.tab` is the tab that will be focused and `tab.panel` is the panel that will be shown if the event isn't cancelled.

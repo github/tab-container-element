@@ -253,7 +253,8 @@ export class TabContainerElement extends HTMLElement {
       this.#beforeTabsSlot.assign(...beforeSlotted)
       this.#afterTabsSlot.assign(...afterTabSlotted)
       this.#afterPanelsSlot.assign(...afterSlotted)
-      const defaultIndex = this.#tabs.findIndex(el => el.matches('[aria-selected=true]'))
+      const defaultTab = Number(this.getAttribute('default-tab') || -1)
+      const defaultIndex = defaultTab >= 0 ? defaultTab : this.#tabs.findIndex(el => el.matches('[aria-selected=true]'))
       index = index >= 0 ? index : Math.max(0, defaultIndex)
     }
 
