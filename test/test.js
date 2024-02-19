@@ -45,6 +45,70 @@ describe('tab-container', function () {
     })
   })
 
+  describe('after tree insertion with aria-selected on second tab', function () {
+    beforeEach(function () {
+      document.body.innerHTML = `
+      <tab-container>
+        <button type="button" role="tab">Tab one</button>
+        <button type="button" role="tab" aria-selected="true">Tab two</button>
+        <button type="button" role="tab">Tab three</button>
+        <div role="tabpanel" hidden>
+          Panel 1
+        </div>
+        <div role="tabpanel">
+          Panel 2
+        </div>
+        <div role="tabpanel" hidden data-tab-container-no-tabstop>
+          Panel 3
+        </div>
+      </tab-container>
+      `
+      tabs = Array.from(document.querySelectorAll('button'))
+      panels = Array.from(document.querySelectorAll('[role="tabpanel"]'))
+    })
+
+    afterEach(function () {
+      document.body.innerHTML = ''
+    })
+
+    it('the second tab is still selected', function () {
+      assert.deepStrictEqual(tabs.map(isSelected), [false, true, false], 'Second tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [true, false, true], 'Second panel is visible')
+    })
+  })
+
+  describe('after tree insertion with default-tab', function () {
+    beforeEach(function () {
+      document.body.innerHTML = `
+      <tab-container default-tab=1>
+        <button type="button" role="tab">Tab one</button>
+        <button type="button" role="tab">Tab two</button>
+        <button type="button" role="tab">Tab three</button>
+        <div role="tabpanel" hidden>
+          Panel 1
+        </div>
+        <div role="tabpanel">
+          Panel 2
+        </div>
+        <div role="tabpanel" hidden data-tab-container-no-tabstop>
+          Panel 3
+        </div>
+      </tab-container>
+      `
+      tabs = Array.from(document.querySelectorAll('button'))
+      panels = Array.from(document.querySelectorAll('[role="tabpanel"]'))
+    })
+
+    afterEach(function () {
+      document.body.innerHTML = ''
+    })
+
+    it('the second tab is still selected', function () {
+      assert.deepStrictEqual(tabs.map(isSelected), [false, true, false], 'Second tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [true, false, true], 'Second panel is visible')
+    })
+  })
+
   describe('after tree insertion', function () {
     beforeEach(function () {
       document.body.innerHTML = `
