@@ -49,6 +49,7 @@ If none of the tabs have `aria-selected=true`, then the first tab will be select
 
 ### Parts
 
+- `::part(tablist-wrapper)` is the wrapper which contains `before-tabs`, `tablist` and `after-tabs`.
 - `::part(tablist)` is the container which wraps all tabs. This element appears in ATs as it is `role=tablist`.
 - `::part(panel)` is the container housing the currently active tabpanel.
 - `::part(before-tabs)` is the container housing any elements that appear before the first `role=tab`. This also can be directly slotted with `slot=before-tabs`. This container lives outside the element with role=tablist to adhere to ARIA guidelines.

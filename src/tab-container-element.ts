@@ -130,6 +130,7 @@ export class TabContainerElement extends HTMLElement {
     const shadowRoot = this.shadowRoot || this.attachShadow({mode: 'open', slotAssignment: 'manual'})
     const tabListContainer = document.createElement('div')
     tabListContainer.style.display = 'flex'
+    tabListContainer.setAttribute('part', 'tablist-wrapper')
     const tabListSlot = document.createElement('slot')
     tabListSlot.setAttribute('part', 'tablist')
     const panelSlot = document.createElement('slot')
