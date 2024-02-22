@@ -1,4 +1,5 @@
 const HTMLElement = globalThis.HTMLElement || (null as unknown as (typeof window)['HTMLElement'])
+const manualSlotsSupported = 'assign' in HTMLSlotElement.prototype
 
 export class TabContainerChangeEvent extends Event {
   constructor(type: string, {tab, panel, ...init}: EventInit & {tab?: Element; panel?: Element}) {
@@ -133,16 +134,21 @@ export class TabContainerElement extends HTMLElement {
     tabListContainer.setAttribute('part', 'tablist-wrapper')
     const tabListSlot = document.createElement('slot')
     tabListSlot.setAttribute('part', 'tablist')
+    tabListSlot.setAttribute('name', 'tablist')
     const panelSlot = document.createElement('slot')
     panelSlot.setAttribute('part', 'panel')
+    panelSlot.setAttribute('name', 'panel')
     panelSlot.setAttribute('role', 'presentation')
     const beforeTabSlot = document.createElement('slot')
     beforeTabSlot.setAttribute('part', 'before-tabs')
+    beforeTabSlot.setAttribute('name', 'before-tabs')
     const afterTabSlot = document.createElement('slot')
     afterTabSlot.setAttribute('part', 'after-tabs')
+    afterTabSlot.setAttribute('name', 'after-tabs')
     tabListContainer.append(beforeTabSlot, tabListSlot, afterTabSlot)
     const afterSlot = document.createElement('slot')
     afterSlot.setAttribute('part', 'after-panels')
+    afterSlot.setAttribute('name', 'after-panels')
     shadowRoot.replaceChildren(tabListContainer, panelSlot, afterSlot)
 
     if (this.#internals && 'role' in this.#internals) {
@@ -218,9 +224,19 @@ export class TabContainerElement extends HTMLElement {
       const tabListSlot = this.#tabListSlot
       const customTabList = this.querySelector('[role=tablist]')
       if (customTabList && customTabList.closest(this.tagName) === this) {
-        tabListSlot.assign(customTabList)
+        if (manualSlotsSupported) {
+          tabListSlot.assign(customTabList)
+        } else {
+          customTabList.setAttribute('slot', 'tablist')
+        }
       } else {
-        tabListSlot.assign(...[...this.children].filter(e => e.matches('[role=tab]')))
+        if (manualSlotsSupported) {
+          tabListSlot.assign(...[...this.children].filter(e => e.matches('[role=tab]')))
+        } else {
+          for (const e of this.children) {
+            if (e.matches('[role=tab]')) e.setAttribute('slot', 'tablist')
+          }
+        }
         tabListSlot.role = 'tablist'
         tabListSlot.style.display = 'block'
       }
@@ -251,9 +267,15 @@ export class TabContainerElement extends HTMLElement {
           autoSlotted.push(child)
         }
       }
-      this.#beforeTabsSlot.assign(...beforeSlotted)
-      this.#afterTabsSlot.assign(...afterTabSlotted)
-      this.#afterPanelsSlot.assign(...afterSlotted)
+      if (manualSlotsSupported) {
+        this.#beforeTabsSlot.assign(...beforeSlotted)
+        this.#afterTabsSlot.assign(...afterTabSlotted)
+        this.#afterPanelsSlot.assign(...afterSlotted)
+      } else {
+        for (const el of beforeSlotted) el.setAttribute('slot', 'before-tabs')
+        for (const el of afterTabSlotted) el.setAttribute('slot', 'after-tabs')
+        for (const el of afterSlotted) el.setAttribute('slot', 'after-panels')
+      }
       const defaultTab = Number(this.getAttribute('default-tab') || -1)
       const defaultIndex = defaultTab >= 0 ? defaultTab : this.#tabs.findIndex(el => el.matches('[aria-selected=true]'))
       index = index >= 0 ? index : Math.max(0, defaultIndex)
@@ -294,11 +316,18 @@ export class TabContainerElement extends HTMLElement {
       if (!panel.hasAttribute('tabindex') && !panel.hasAttribute('data-tab-container-no-tabstop')) {
         panel.setAttribute('tabindex', '0')
       }
+      if (!manualSlotsSupported && panel.hasAttribute('slot')) {
+        panel.removeAttribute('slot')
+      }
     }
 
     selectedTab.setAttribute('aria-selected', 'true')
     selectedTab.setAttribute('tabindex', '0')
-    this.#panelSlot.assign(selectedPanel)
+    if (manualSlotsSupported) {
+      this.#panelSlot.assign(selectedPanel)
+    } else {
+      selectedPanel.setAttribute('slot', 'panel')
+    }
     selectedPanel.hidden = false
 
     if (this.#setupComplete) {
