@@ -71,7 +71,15 @@ export class TabContainerElement extends HTMLElement {
 
   get #tabList() {
     const slot = this.#tabListSlot
-    return slot.assignedNodes()[0] as HTMLElement
+    if (this.#tabListTabWrapper.hasAttribute('role')) {
+      return this.#tabListTabWrapper
+    } else {
+      return slot.assignedNodes()[0] as HTMLElement
+    }
+  }
+
+  get #tabListTabWrapper() {
+    return this.shadowRoot!.querySelector<HTMLSlotElement>('div[part="tablist-tab-wrapper"]')!
   }
 
   get #beforeTabsSlot() {
@@ -95,6 +103,9 @@ export class TabContainerElement extends HTMLElement {
   }
 
   get #tabs() {
+    if (this.#tabListTabWrapper.matches('[role=tablist]')) {
+      return this.#tabListSlot.assignedNodes() as HTMLElement[]
+    }
     return Array.from(this.#tabList?.querySelectorAll<HTMLElement>('[role="tab"]') || []).filter(
       tab => tab instanceof HTMLElement && tab.closest(this.tagName) === this,
     )
@@ -125,9 +136,12 @@ export class TabContainerElement extends HTMLElement {
     const tabListContainer = document.createElement('div')
     tabListContainer.style.display = 'flex'
     tabListContainer.setAttribute('part', 'tablist-wrapper')
+    const tabListTabWrapper = document.createElement('div')
+    tabListTabWrapper.setAttribute('part', 'tablist-tab-wrapper')
     const tabListSlot = document.createElement('slot')
     tabListSlot.setAttribute('part', 'tablist')
     tabListSlot.setAttribute('name', 'tablist')
+    tabListTabWrapper.append(tabListSlot)
     const panelSlot = document.createElement('slot')
     panelSlot.setAttribute('part', 'panel')
     panelSlot.setAttribute('name', 'panel')
@@ -138,7 +152,7 @@ export class TabContainerElement extends HTMLElement {
     const afterTabSlot = document.createElement('slot')
     afterTabSlot.setAttribute('part', 'after-tabs')
     afterTabSlot.setAttribute('name', 'after-tabs')
-    tabListContainer.append(beforeTabSlot, tabListSlot, afterTabSlot)
+    tabListContainer.append(beforeTabSlot, tabListTabWrapper, afterTabSlot)
     const afterSlot = document.createElement('slot')
     afterSlot.setAttribute('part', 'after-panels')
     afterSlot.setAttribute('name', 'after-panels')
@@ -223,16 +237,13 @@ export class TabContainerElement extends HTMLElement {
           customTabList.setAttribute('slot', 'tablist')
         }
       } else {
-        const tabListElement = document.createElement('div')
-        this.prepend(tabListElement)
-        tabListElement.append(...[...this.children].filter(e => e.matches('[role=tab]')))
-        tabListElement.role = 'tablist'
-        tabListElement.style.display = 'block'
-
+        this.#tabListTabWrapper.role = 'tablist'
         if (manualSlotsSupported) {
-          tabListSlot.assign(tabListElement)
+          tabListSlot.assign(...[...this.children].filter(e => e.matches('[role=tab]')))
         } else {
-          tabListElement.setAttribute('slot', 'tablist')
+          for (const e of this.children) {
+            if (e.matches('[role=tab]')) e.setAttribute('slot', 'tablist')
+          }
         }
       }
       const tabList = this.#tabList
@@ -246,7 +257,7 @@ export class TabContainerElement extends HTMLElement {
       const afterSlotted: Element[] = []
       let autoSlotted = beforeSlotted
       for (const child of this.children) {
-        if (child.getAttribute('role') === 'tablist') {
+        if (child.getAttribute('role') === 'tab' || child.getAttribute('role') === 'tablist') {
           autoSlotted = afterTabSlotted
           continue
         }
