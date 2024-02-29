@@ -8,6 +8,11 @@
       "declarations": [
         {
           "kind": "variable",
+          "name": "TabContainerChangeEvent",
+          "default": "_TabContainerChangeEvent"
+        },
+        {
+          "kind": "variable",
           "name": "TabContainerElement",
           "default": "_TabContainerElement"
         },
@@ -18,6 +23,14 @@
         }
       ],
       "exports": [
+        {
+          "kind": "js",
+          "name": "TabContainerChangeEvent",
+          "declaration": {
+            "name": "TabContainerChangeEvent",
+            "module": "dist/bundle.js"
+          }
+        },
         {
           "kind": "js",
           "name": "TabContainerElement",
@@ -97,6 +110,32 @@
         {
           "kind": "class",
           "description": "",
+          "name": "TabContainerChangeEvent",
+          "members": [
+            {
+              "kind": "field",
+              "name": "detail",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "panel",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "tab",
+              "readonly": true
+            }
+          ],
+          "superclass": {
+            "name": "Event",
+            "module": "dist/tab-container-element.js"
+          }
+        },
+        {
+          "kind": "class",
+          "description": "",
           "name": "TabContainerElement",
           "members": [
             {
@@ -115,6 +154,32 @@
               ]
             },
             {
+              "kind": "field",
+              "name": "onTabContainerChange"
+            },
+            {
+              "kind": "field",
+              "name": "onTabContainerChanged"
+            },
+            {
+              "kind": "field",
+              "name": "activePanel",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "vertical"
+            },
+            {
+              "kind": "method",
+              "name": "handleEvent",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
               "kind": "method",
               "name": "selectTab",
               "parameters": [
@@ -128,13 +193,13 @@
             {
               "name": "tab-container-change",
               "type": {
-                "text": "CustomEvent"
+                "text": "TabContainerChangeEvent"
               }
             },
             {
               "name": "tab-container-changed",
               "type": {
-                "text": "CustomEvent"
+                "text": "TabContainerChangeEvent"
               }
             }
           ],
@@ -145,6 +210,14 @@
         }
       ],
       "exports": [
+        {
+          "kind": "js",
+          "name": "TabContainerChangeEvent",
+          "declaration": {
+            "name": "TabContainerChangeEvent",
+            "module": "dist/tab-container-element.js"
+          }
+        },
         {
           "kind": "js",
           "name": "TabContainerElement",
@@ -216,6 +289,56 @@
         {
           "kind": "class",
           "description": "",
+          "name": "TabContainerChangeEvent",
+          "members": [
+            {
+              "kind": "field",
+              "name": "detail",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "#panel",
+              "privacy": "private",
+              "type": {
+                "text": "Element | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "panel",
+              "type": {
+                "text": "Element | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "#tab",
+              "privacy": "private",
+              "type": {
+                "text": "Element | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "tab",
+              "type": {
+                "text": "Element | null"
+              },
+              "readonly": true
+            }
+          ],
+          "superclass": {
+            "name": "Event",
+            "module": "src/tab-container-element.ts"
+          }
+        },
+        {
+          "kind": "class",
+          "description": "",
           "name": "TabContainerElement",
           "members": [
             {
@@ -230,6 +353,157 @@
                 {
                   "name": "registry",
                   "default": "customElements"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "#onTabContainerChange",
+              "privacy": "private",
+              "type": {
+                "text": "((event: TabContainerChangeEvent) => void) | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "onTabContainerChange"
+            },
+            {
+              "kind": "field",
+              "name": "#onTabContainerChanged",
+              "privacy": "private",
+              "type": {
+                "text": "((event: TabContainerChangeEvent) => void) | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "onTabContainerChanged"
+            },
+            {
+              "kind": "field",
+              "name": "#tabList",
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "#beforeTabsSlot",
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "#afterTabsSlot",
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "#afterPanelsSlot",
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "#tabListSlot",
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "#panelSlot",
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "#tabs",
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "activePanel",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "vertical",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#setupComplete",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#internals",
+              "privacy": "private",
+              "type": {
+                "text": "ElementInternals | null"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "handleEvent",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#handleKeydown",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "KeyboardEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#handleClick",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "MouseEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#reflectAttributeToShadow",
+              "parameters": [
+                {
+                  "name": "name",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "node",
+                  "type": {
+                    "text": "Element"
+                  }
                 }
               ]
             },
@@ -255,14 +529,19 @@
             {
               "name": "tab-container-change",
               "type": {
-                "text": "CustomEvent"
+                "text": "TabContainerChangeEvent"
               }
             },
             {
               "name": "tab-container-changed",
               "type": {
-                "text": "CustomEvent"
+                "text": "TabContainerChangeEvent"
               }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "vertical"
             }
           ],
           "superclass": {
@@ -272,6 +551,14 @@
         }
       ],
       "exports": [
+        {
+          "kind": "js",
+          "name": "TabContainerChangeEvent",
+          "declaration": {
+            "name": "TabContainerChangeEvent",
+            "module": "src/tab-container-element.ts"
+          }
+        },
         {
           "kind": "js",
           "name": "TabContainerElement",
