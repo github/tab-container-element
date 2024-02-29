@@ -71,11 +71,15 @@ export class TabContainerElement extends HTMLElement {
 
   get #tabList() {
     const slot = this.#tabListSlot
-    if (this.#tabListSlot.hasAttribute('role')) {
-      return slot
+    if (this.#tabListTabWrapper.hasAttribute('role')) {
+      return this.#tabListTabWrapper
     } else {
       return slot.assignedNodes()[0] as HTMLElement
     }
+  }
+
+  get #tabListTabWrapper() {
+    return this.shadowRoot!.querySelector<HTMLSlotElement>('div[part="tablist-tab-wrapper"]')!
   }
 
   get #beforeTabsSlot() {
@@ -99,7 +103,7 @@ export class TabContainerElement extends HTMLElement {
   }
 
   get #tabs() {
-    if (this.#tabListSlot.matches('[role=tablist]')) {
+    if (this.#tabListTabWrapper.matches('[role=tablist]')) {
       return this.#tabListSlot.assignedNodes() as HTMLElement[]
     }
     return Array.from(this.#tabList?.querySelectorAll<HTMLElement>('[role="tab"]') || []).filter(
@@ -132,9 +136,12 @@ export class TabContainerElement extends HTMLElement {
     const tabListContainer = document.createElement('div')
     tabListContainer.style.display = 'flex'
     tabListContainer.setAttribute('part', 'tablist-wrapper')
+    const tabListTabWrapper = document.createElement('div')
+    tabListTabWrapper.setAttribute('part', 'tablist-tab-wrapper')
     const tabListSlot = document.createElement('slot')
     tabListSlot.setAttribute('part', 'tablist')
     tabListSlot.setAttribute('name', 'tablist')
+    tabListTabWrapper.append(tabListSlot)
     const panelSlot = document.createElement('slot')
     panelSlot.setAttribute('part', 'panel')
     panelSlot.setAttribute('name', 'panel')
@@ -145,7 +152,7 @@ export class TabContainerElement extends HTMLElement {
     const afterTabSlot = document.createElement('slot')
     afterTabSlot.setAttribute('part', 'after-tabs')
     afterTabSlot.setAttribute('name', 'after-tabs')
-    tabListContainer.append(beforeTabSlot, tabListSlot, afterTabSlot)
+    tabListContainer.append(beforeTabSlot, tabListTabWrapper, afterTabSlot)
     const afterSlot = document.createElement('slot')
     afterSlot.setAttribute('part', 'after-panels')
     afterSlot.setAttribute('name', 'after-panels')
@@ -230,6 +237,7 @@ export class TabContainerElement extends HTMLElement {
           customTabList.setAttribute('slot', 'tablist')
         }
       } else {
+        this.#tabListTabWrapper.role = 'tablist'
         if (manualSlotsSupported) {
           tabListSlot.assign(...[...this.children].filter(e => e.matches('[role=tab]')))
         } else {
@@ -237,8 +245,6 @@ export class TabContainerElement extends HTMLElement {
             if (e.matches('[role=tab]')) e.setAttribute('slot', 'tablist')
           }
         }
-        tabListSlot.role = 'tablist'
-        tabListSlot.style.display = 'block'
       }
       const tabList = this.#tabList
       this.#reflectAttributeToShadow('aria-description', tabList)
