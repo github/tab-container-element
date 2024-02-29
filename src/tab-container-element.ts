@@ -1,4 +1,5 @@
 const HTMLElement = globalThis.HTMLElement || (null as unknown as (typeof window)['HTMLElement'])
+const HTMLSlotElement = globalThis.HTMLSlotElement || (null as unknown as (typeof window)['HTMLSlotElement'])
 const manualSlotsSupported = 'assign' in HTMLSlotElement.prototype
 
 export class TabContainerChangeEvent extends Event {
