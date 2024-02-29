@@ -71,11 +71,7 @@ export class TabContainerElement extends HTMLElement {
 
   get #tabList() {
     const slot = this.#tabListSlot
-    if (this.#tabListSlot.hasAttribute('role')) {
-      return slot
-    } else {
-      return slot.assignedNodes()[0] as HTMLElement
-    }
+    return slot.assignedNodes()[0] as HTMLElement
   }
 
   get #beforeTabsSlot() {
@@ -99,9 +95,6 @@ export class TabContainerElement extends HTMLElement {
   }
 
   get #tabs() {
-    if (this.#tabListSlot.matches('[role=tablist]')) {
-      return this.#tabListSlot.assignedNodes() as HTMLElement[]
-    }
     return Array.from(this.#tabList?.querySelectorAll<HTMLElement>('[role="tab"]') || []).filter(
       tab => tab instanceof HTMLElement && tab.closest(this.tagName) === this,
     )
@@ -230,15 +223,17 @@ export class TabContainerElement extends HTMLElement {
           customTabList.setAttribute('slot', 'tablist')
         }
       } else {
+        const tabListElement = document.createElement('div')
+        this.prepend(tabListElement)
+        tabListElement.append(...[...this.children].filter(e => e.matches('[role=tab]')))
+        tabListElement.role = 'tablist'
+        tabListElement.style.display = 'block'
+
         if (manualSlotsSupported) {
-          tabListSlot.assign(...[...this.children].filter(e => e.matches('[role=tab]')))
+          tabListSlot.assign(tabListElement)
         } else {
-          for (const e of this.children) {
-            if (e.matches('[role=tab]')) e.setAttribute('slot', 'tablist')
-          }
+          tabListElement.setAttribute('slot', 'tablist')
         }
-        tabListSlot.role = 'tablist'
-        tabListSlot.style.display = 'block'
       }
       const tabList = this.#tabList
       this.#reflectAttributeToShadow('aria-description', tabList)
@@ -251,7 +246,7 @@ export class TabContainerElement extends HTMLElement {
       const afterSlotted: Element[] = []
       let autoSlotted = beforeSlotted
       for (const child of this.children) {
-        if (child.getAttribute('role') === 'tab' || child.getAttribute('role') === 'tablist') {
+        if (child.getAttribute('role') === 'tablist') {
           autoSlotted = afterTabSlotted
           continue
         }
