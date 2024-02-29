@@ -1,5 +1,5 @@
 const HTMLElement = globalThis.HTMLElement || (null as unknown as (typeof window)['HTMLElement'])
-const manualSlotsSupported = 'assign' in HTMLSlotElement.prototype
+const manualSlotsSupported = 'assign' in (globalThis.HTMLSlotElement?.prototype || {})
 
 export class TabContainerChangeEvent extends Event {
   constructor(type: string, {tab, panel, ...init}: EventInit & {tab?: Element; panel?: Element}) {
