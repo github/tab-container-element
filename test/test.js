@@ -162,6 +162,8 @@ describe('tab-container', function () {
         'change events point to second panel',
       )
       assert.equal(document.activeElement, tabs[1])
+      assert.equal(tabContainer.activeTab, tabs[1])
+      assert.equal(tabContainer.selectedTabIndex, 1)
     })
 
     it('keyboard shortcuts work and `tab-container-changed` events are dispatched', function () {
@@ -187,6 +189,8 @@ describe('tab-container', function () {
       assert.deepStrictEqual(tabs.map(isSelected), [true, false, false], 'First tab is selected')
       assert.deepStrictEqual(panels.map(isHidden), [false, true, true], 'First panel is visible')
       assert.equal(document.activeElement, tabs[0])
+      assert.equal(tabContainer.activeTab, tabs[0])
+      assert.equal(tabContainer.selectedTabIndex, 0)
       assert.equal(events.length, 2, 'tab-container-change(d) called')
       assert.deepStrictEqual(
         events.map(e => e.type),
@@ -280,6 +284,8 @@ describe('tab-container', function () {
         'change events point to second panel',
       )
       assert.equal(document.activeElement, tabs[1])
+      assert.equal(tabContainer.activeTab, tabs[1])
+      assert.equal(tabContainer.selectedTabIndex, 1)
     })
 
     it('result in noop, when selectTab receives out of bounds index', function () {
@@ -417,6 +423,8 @@ describe('tab-container', function () {
       assert.deepStrictEqual(tabs.map(isSelected), [false, false, true], 'Third tab is selected')
       assert.deepStrictEqual(panels.map(isHidden), [true, true, false], 'Third panel is visible')
       assert.equal(document.activeElement, tabs[2])
+      assert.equal(tabContainer.activeTab, tabs[2])
+      assert.equal(tabContainer.selectedTabIndex, 2)
       assert.equal(events.length, 2, 'tab-container-change(d) called')
       assert.deepStrictEqual(
         events.map(e => e.type),
@@ -439,6 +447,8 @@ describe('tab-container', function () {
       assert.deepStrictEqual(tabs.map(isSelected), [true, false, false], 'First tab is selected')
       assert.deepStrictEqual(panels.map(isHidden), [false, true, true], 'First panel is visible')
       assert.equal(document.activeElement, tabs[0])
+      assert.equal(tabContainer.activeTab, tabs[0])
+      assert.equal(tabContainer.selectedTabIndex, 0)
       assert.equal(events.length, 2, 'tab-container-change(d) called')
       assert.deepStrictEqual(
         events.map(e => e.type),
@@ -461,6 +471,8 @@ describe('tab-container', function () {
       assert.deepStrictEqual(tabs.map(isSelected), [false, true, false], 'Second tab is selected')
       assert.deepStrictEqual(panels.map(isHidden), [true, false, true], 'Second panel is visible')
       assert.equal(document.activeElement, tabs[1])
+      assert.equal(tabContainer.activeTab, tabs[1])
+      assert.equal(tabContainer.selectedTabIndex, 1)
       assert.equal(events.length, 2, 'tab-container-change(d) called')
       assert.deepStrictEqual(
         events.map(e => e.type),
@@ -483,6 +495,8 @@ describe('tab-container', function () {
       assert.deepStrictEqual(tabs.map(isSelected), [false, false, true], 'Third tab is selected')
       assert.deepStrictEqual(panels.map(isHidden), [true, true, false], 'Third panel is visible')
       assert.equal(document.activeElement, tabs[2])
+      assert.equal(tabContainer.activeTab, tabs[2])
+      assert.equal(tabContainer.selectedTabIndex, 2)
       assert.equal(events.length, 2, 'tab-container-change(d) called')
       assert.deepStrictEqual(
         events.map(e => e.type),
@@ -506,6 +520,8 @@ describe('tab-container', function () {
       assert.deepStrictEqual(tabs.map(isSelected), [false, false, true], 'Third tab is selected')
       assert.deepStrictEqual(panels.map(isHidden), [true, true, false], 'Third panel is visible')
       assert.equal(document.activeElement, tabs[2])
+      assert.equal(tabContainer.activetab, tabs[2])
+      assert.equal(tabContainer.selectedTabIndex, 2)
       assert.equal(events.length, 2, 'tab-container-change(d) called')
       assert.deepStrictEqual(
         events.map(e => e.type),
@@ -528,6 +544,8 @@ describe('tab-container', function () {
       assert.deepStrictEqual(tabs.map(isSelected), [true, false, false], 'First tab is selected')
       assert.deepStrictEqual(panels.map(isHidden), [false, true, true], 'First panel is visible')
       assert.equal(document.activeElement, tabs[0])
+      assert.equal(tabContainer.activeTab, tabs[0])
+      assert.equal(tabContainer.selectedTabIndex, 0)
       assert.equal(events.length, 2, 'tab-container-change(d) called')
       assert.deepStrictEqual(
         events.map(e => e.type),
@@ -550,6 +568,8 @@ describe('tab-container', function () {
       assert.deepStrictEqual(tabs.map(isSelected), [false, true, false], 'Second tab is selected')
       assert.deepStrictEqual(panels.map(isHidden), [true, false, true], 'Second panel is visible')
       assert.equal(document.activeElement, tabs[1])
+      assert.equal(tabContainer.activeTab, tabs[1])
+      assert.equal(tabContainer.selectedTabIndex, 1)
       assert.equal(events.length, 2, 'tab-container-change(d) called')
       assert.deepStrictEqual(
         events.map(e => e.type),
@@ -572,6 +592,8 @@ describe('tab-container', function () {
       assert.deepStrictEqual(tabs.map(isSelected), [false, false, true], 'Third tab is selected')
       assert.deepStrictEqual(panels.map(isHidden), [true, true, false], 'Third panel is visible')
       assert.equal(document.activeElement, tabs[2])
+      assert.equal(tabContainer.activetab, tabs[2])
+      assert.equal(tabContainer.selectedTabIndex, 2)
       assert.equal(events.length, 2, 'tab-container-change(d) called')
       assert.deepStrictEqual(
         events.map(e => e.type),
