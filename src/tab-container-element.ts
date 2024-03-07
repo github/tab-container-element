@@ -111,6 +111,10 @@ export class TabContainerElement extends HTMLElement {
     )
   }
 
+  get activeTab() {
+    return this.#tabs[this.selectedTabIndex]
+  }
+
   get activePanel() {
     return this.#panelSlot.assignedNodes()[0] as HTMLElement
   }
@@ -189,7 +193,7 @@ export class TabContainerElement extends HTMLElement {
     const tabs = this.#tabs
     if (!tabs.includes(tab as HTMLElement)) return
 
-    const currentIndex = tabs.indexOf(tabs.find(e => e.matches('[aria-selected="true"]'))!)
+    const currentIndex = this.selectedTabIndex
     const vertical = tab.closest('[role="tablist"]')?.getAttribute('aria-orientation') === 'vertical'
     const prevTab = event.code === 'ArrowLeft' || (vertical && event.code === 'ArrowUp')
     const nextTab = event.code === 'ArrowRight' || (vertical && event.code === 'ArrowDown')
@@ -224,6 +228,14 @@ export class TabContainerElement extends HTMLElement {
       node.setAttribute(name, this.getAttribute(name)!)
       this.removeAttribute(name)
     }
+  }
+
+  get selectedTabIndex(): number {
+    return this.#tabs.findIndex(el => el.matches('[aria-selected=true]'))
+  }
+
+  set selectedTabIndex(i: number) {
+    this.selectTab(i)
   }
 
   selectTab(index: number): void {
@@ -283,7 +295,7 @@ export class TabContainerElement extends HTMLElement {
         for (const el of afterSlotted) el.setAttribute('slot', 'after-panels')
       }
       const defaultTab = Number(this.getAttribute('default-tab') || -1)
-      const defaultIndex = defaultTab >= 0 ? defaultTab : this.#tabs.findIndex(el => el.matches('[aria-selected=true]'))
+      const defaultIndex = defaultTab >= 0 ? defaultTab : this.selectedTabIndex
       index = index >= 0 ? index : Math.max(0, defaultIndex)
     }
 
