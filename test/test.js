@@ -111,7 +111,7 @@ describe('tab-container', function () {
   describe('after tree insertion with defaulTabIndex', function () {
     beforeEach(function () {
       document.body.innerHTML = `
-      <tab-container defaultTabIndex=1>
+      <tab-container default-tab="1">
         <button type="button" role="tab">Tab one</button>
         <button type="button" role="tab">Tab two</button>
         <button type="button" role="tab">Tab three</button>

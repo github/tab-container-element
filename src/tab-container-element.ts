@@ -255,11 +255,11 @@ export class TabContainerElement extends HTMLElement {
   }
 
   get defaultTabIndex(): number {
-    return Number(this.getAttribute('default-tab-index') || -1)
+    return Number(this.getAttribute('default-tab') || -1)
   }
 
   set defaultTabIndex(index: number) {
-    this.setAttribute('default-tab-index', String(index))
+    this.setAttribute('default-tab', String(index))
   }
 
   selectTab(index: number): void {
