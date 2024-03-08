@@ -31,6 +31,14 @@ export class TabContainerElement extends HTMLElement {
     return this
   }
 
+  get onChange() {
+    return this.onTabContainerChange
+  }
+
+  set onChange(listener: ((event: TabContainerChangeEvent) => void) | null) {
+    this.onTabContainerChange = listener
+  }
+
   #onTabContainerChange: ((event: TabContainerChangeEvent) => void) | null = null
   get onTabContainerChange() {
     return this.#onTabContainerChange
@@ -65,6 +73,14 @@ export class TabContainerElement extends HTMLElement {
     if (typeof listener === 'function') {
       this.addEventListener('tab-container-changed', listener as unknown as EventListenerOrEventListenerObject)
     }
+  }
+
+  get onChanged() {
+    return this.onTabContainerChanged
+  }
+
+  set onChanged(listener: ((event: TabContainerChangeEvent) => void) | null) {
+    this.onTabContainerChanged = listener
   }
 
   static observedAttributes = ['vertical']

@@ -155,11 +155,24 @@
             },
             {
               "kind": "field",
+              "name": "onChange"
+            },
+            {
+              "kind": "field",
               "name": "onTabContainerChange"
             },
             {
               "kind": "field",
               "name": "onTabContainerChanged"
+            },
+            {
+              "kind": "field",
+              "name": "onChanged"
+            },
+            {
+              "kind": "field",
+              "name": "activeTab",
+              "readonly": true
             },
             {
               "kind": "field",
@@ -178,6 +191,10 @@
                   "name": "event"
                 }
               ]
+            },
+            {
+              "kind": "field",
+              "name": "selectedTabIndex"
             },
             {
               "kind": "method",
@@ -358,6 +375,10 @@
             },
             {
               "kind": "field",
+              "name": "onChange"
+            },
+            {
+              "kind": "field",
               "name": "#onTabContainerChange",
               "privacy": "private",
               "type": {
@@ -384,7 +405,17 @@
             },
             {
               "kind": "field",
+              "name": "onChanged"
+            },
+            {
+              "kind": "field",
               "name": "#tabList",
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "#tabListTabWrapper",
               "privacy": "private",
               "readonly": true
             },
@@ -422,6 +453,11 @@
               "kind": "field",
               "name": "#tabs",
               "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "activeTab",
               "readonly": true
             },
             {
@@ -506,6 +542,13 @@
                   }
                 }
               ]
+            },
+            {
+              "kind": "field",
+              "name": "selectedTabIndex",
+              "type": {
+                "text": "number"
+              }
             },
             {
               "kind": "method",
