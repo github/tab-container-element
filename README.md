@@ -31,11 +31,11 @@ import '@github/tab-container-element'
 </tab-container>
 ```
 
-If none of the tabs have `aria-selected=true`, then the first tab will be selected automatically. You can also add the `default-tab=N` attribute to avoid having to set `aria-selected=true` on the desired tab, where `N` is the 0-based tab index:
+If none of the tabs have `aria-selected=true`, then the first tab will be selected automatically. You can also add the `default-tab-index=N` attribute to avoid having to set `aria-selected=true` on the desired tab, where `N` is the 0-based tab index:
 
 ```html
 <!-- The _second_ tab will be selected -->
-<tab-container default-tab="1">
+<tab-container default-tab-index="1">
   <button type="button" id="tab-one" role="tab">Tab one</button>
   <button type="button" id="tab-two" role="tab">Tab two</button>
   <button type="button" id="tab-three" role="tab">Tab three</button>

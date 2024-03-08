@@ -254,6 +254,14 @@ export class TabContainerElement extends HTMLElement {
     this.selectTab(i)
   }
 
+  get defaultTabIndex(): number {
+    return Number(this.getAttribute('default-tab-index') || -1)
+  }
+
+  set defaultTabIndex(index: number) {
+    this.setAttribute('default-tab-index', String(index))
+  }
+
   selectTab(index: number): void {
     if (!this.#setupComplete) {
       const tabListSlot = this.#tabListSlot
@@ -310,7 +318,7 @@ export class TabContainerElement extends HTMLElement {
         for (const el of afterTabSlotted) el.setAttribute('slot', 'after-tabs')
         for (const el of afterSlotted) el.setAttribute('slot', 'after-panels')
       }
-      const defaultTab = Number(this.getAttribute('default-tab') || -1)
+      const defaultTab = this.defaultTabIndex
       const defaultIndex = defaultTab >= 0 ? defaultTab : this.selectedTabIndex
       index = index >= 0 ? index : Math.max(0, defaultIndex)
     }
