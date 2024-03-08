@@ -43,6 +43,30 @@ describe('tab-container', function () {
       el.dispatchEvent(new Event('tab-container-changed'))
       assert.equal(called, true)
     })
+
+    it('has an onChange property that is aliased to onTabContainerChange', function () {
+      const el = document.createElement('tab-container')
+      let called = false
+      const listener = () => (called = true)
+      el.onChange = listener
+      assert.equal(el.onTabContainerChange, listener)
+      assert.equal(el.onChange, listener)
+      assert.equal(called, false)
+      el.dispatchEvent(new Event('tab-container-change'))
+      assert.equal(called, true)
+    })
+
+    it('has an onChanged property that is aliased to onTabContainerChanged', function () {
+      const el = document.createElement('tab-container')
+      let called = false
+      const listener = () => (called = true)
+      el.onChanged = listener
+      assert.equal(el.onTabContainerChanged, listener)
+      assert.equal(el.onChanged, listener)
+      assert.equal(called, false)
+      el.dispatchEvent(new Event('tab-container-changed'))
+      assert.equal(called, true)
+    })
   })
 
   describe('after tree insertion with aria-selected on second tab', function () {
