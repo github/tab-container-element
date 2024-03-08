@@ -197,6 +197,10 @@
               "name": "selectedTabIndex"
             },
             {
+              "kind": "field",
+              "name": "defaultTabIndex"
+            },
+            {
               "kind": "method",
               "name": "selectTab",
               "parameters": [
@@ -546,6 +550,13 @@
             {
               "kind": "field",
               "name": "selectedTabIndex",
+              "type": {
+                "text": "number"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "defaultTabIndex",
               "type": {
                 "text": "number"
               }
