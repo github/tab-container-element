@@ -1,5 +1,42 @@
+// CSP trusted types: We don't want to add `@types/trusted-types` as a
+// dependency, so we use the following types as a stand-in.
+interface CSPTrustedTypesPolicy {
+  createHTML: (s: string) => CSPTrustedHTMLToStringable
+}
+// Note: basically every object (and some primitives) in JS satisfy this
+// `CSPTrustedHTMLToStringable` interface, but this is the most compatible shape
+// we can use.
+interface CSPTrustedHTMLToStringable {
+  toString: () => string
+}
+
 const HTMLElement = globalThis.HTMLElement || (null as unknown as (typeof window)['HTMLElement'])
 const manualSlotsSupported = 'assign' in (globalThis.HTMLSlotElement?.prototype || {})
+const html = String.raw
+
+const shadowHTML = html`
+  <div style="display: flex" part="tablist-wrapper">
+    <slot part="before-tabs" name="before-tabs"></slot>
+    <div part="tablist-tab-wrapper">
+      <slot part="tablist" name="tablist"></slot>
+    </div>
+    <slot part="after-tabs" name="after-tabs"></slot>
+  </div>
+  <slot part="panel" name="panel" role="presentation"></slot>
+  <slot part="after-panels" name="after-panels"></slot>
+`
+
+export interface ElementRender {
+  renderShadow(): string
+  shadowRootOptions?: {
+    shadowrootmode?: 'open' | 'closed',
+    delegatesFocus?: boolean,
+  }
+}
+
+export interface CSPRenderer {
+  setCSPTrustedTypesPolicy(policy: CSPTrustedTypesPolicy | Promise<CSPTrustedTypesPolicy> | null): void
+}
 
 export class TabContainerChangeEvent extends Event {
   constructor(type: string, {tab, panel, ...init}: EventInit & {tab?: Element; panel?: Element}) {
@@ -25,10 +62,27 @@ export class TabContainerChangeEvent extends Event {
   }
 }
 
+let cspTrustedTypesPolicyPromise: Promise<CSPTrustedTypesPolicy> | null = null
+
 export class TabContainerElement extends HTMLElement {
   static define(tag = 'tab-container', registry = customElements) {
     registry.define(tag, this)
     return this
+  }
+
+  static observedAttributes = ['vertical']
+
+  static renderShadow() {
+    return shadowHTML
+  }
+  
+  static shadowRootOptions = {
+    shadowrootmode: 'open'
+  }
+
+  // Passing `null` clears the policy.
+  static setCSPTrustedTypesPolicy(policy: CSPTrustedTypesPolicy | Promise<CSPTrustedTypesPolicy> | null): void {
+    cspTrustedTypesPolicyPromise = policy === null ? policy : Promise.resolve(policy)
   }
 
   get onChange() {
@@ -82,8 +136,6 @@ export class TabContainerElement extends HTMLElement {
   set onChanged(listener: ((event: TabContainerChangeEvent) => void) | null) {
     this.onTabContainerChanged = listener
   }
-
-  static observedAttributes = ['vertical']
 
   get #tabList() {
     const slot = this.#tabListSlot
@@ -150,33 +202,17 @@ export class TabContainerElement extends HTMLElement {
 
   #setupComplete = false
   #internals!: ElementInternals | null
-  connectedCallback(): void {
+  async connectedCallback(): Promise<void> {
     this.#internals ||= this.attachInternals ? this.attachInternals() : null
     const shadowRoot = this.shadowRoot || this.attachShadow({mode: 'open', slotAssignment: 'manual'})
-    const tabListContainer = document.createElement('div')
-    tabListContainer.style.display = 'flex'
-    tabListContainer.setAttribute('part', 'tablist-wrapper')
-    const tabListTabWrapper = document.createElement('div')
-    tabListTabWrapper.setAttribute('part', 'tablist-tab-wrapper')
-    const tabListSlot = document.createElement('slot')
-    tabListSlot.setAttribute('part', 'tablist')
-    tabListSlot.setAttribute('name', 'tablist')
-    tabListTabWrapper.append(tabListSlot)
-    const panelSlot = document.createElement('slot')
-    panelSlot.setAttribute('part', 'panel')
-    panelSlot.setAttribute('name', 'panel')
-    panelSlot.setAttribute('role', 'presentation')
-    const beforeTabSlot = document.createElement('slot')
-    beforeTabSlot.setAttribute('part', 'before-tabs')
-    beforeTabSlot.setAttribute('name', 'before-tabs')
-    const afterTabSlot = document.createElement('slot')
-    afterTabSlot.setAttribute('part', 'after-tabs')
-    afterTabSlot.setAttribute('name', 'after-tabs')
-    tabListContainer.append(beforeTabSlot, tabListTabWrapper, afterTabSlot)
-    const afterSlot = document.createElement('slot')
-    afterSlot.setAttribute('part', 'after-panels')
-    afterSlot.setAttribute('name', 'after-panels')
-    shadowRoot.replaceChildren(tabListContainer, panelSlot, afterSlot)
+    if (cspTrustedTypesPolicyPromise) {
+      const cspTrustedTypesPolicy = await cspTrustedTypesPolicyPromise
+      // eslint-disable-next-line github/no-inner-html
+      shadowRoot.innerHTML = cspTrustedTypesPolicy.createHTML(shadowHTML).toString()
+    } else {
+      // eslint-disable-next-line github/no-inner-html
+      shadowRoot.innerHTML = shadowHTML
+    }
 
     if (this.#internals && 'role' in this.#internals) {
       this.#internals.role = 'presentation'

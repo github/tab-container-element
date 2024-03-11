@@ -154,6 +154,21 @@
               ]
             },
             {
+              "kind": "method",
+              "name": "renderShadow",
+              "static": true
+            },
+            {
+              "kind": "method",
+              "name": "setCSPTrustedTypesPolicy",
+              "static": true,
+              "parameters": [
+                {
+                  "name": "policy"
+                }
+              ]
+            },
+            {
               "kind": "field",
               "name": "onChange"
             },
@@ -374,6 +389,29 @@
                 {
                   "name": "registry",
                   "default": "customElements"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderShadow",
+              "static": true
+            },
+            {
+              "kind": "method",
+              "name": "setCSPTrustedTypesPolicy",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "policy",
+                  "type": {
+                    "text": "CSPTrustedTypesPolicy | Promise<CSPTrustedTypesPolicy> | null"
+                  }
                 }
               ]
             },
