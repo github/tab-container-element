@@ -27,6 +27,14 @@ declare global {
       ['tab-container']: JSXBase['span'] & Partial<Omit<TabContainerElement, keyof HTMLElement>>
     }
   }
+  interface GlobalEventHandlersEventMap {
+    'tab-container-change': TabContainerChangeEvent;
+    'tab-container-changed': TabContainerChangeEvent;
+  }
+  interface ElementEventMap {
+    'tab-container-change': TabContainerChangeEvent;
+    'tab-container-changed': TabContainerChangeEvent;
+  }
 }
 
 export default TabContainerElement
