@@ -39,9 +39,13 @@ export interface CSPRenderer {
 }
 
 export class TabContainerChangeEvent extends Event {
-  constructor(type: string, {tab, panel, ...init}: EventInit & {tab?: Element; panel?: Element}) {
+  constructor(
+    type: string,
+    {tabIndex, tab, panel, ...init}: EventInit & {tabIndex?: number; tab?: Element; panel?: Element},
+  ) {
     super(type, init)
     this.#tab = tab || null
+    this.#tabIndex = tabIndex || null
     this.#panel = panel || null
   }
 
@@ -49,6 +53,11 @@ export class TabContainerChangeEvent extends Event {
     // eslint-disable-next-line no-console
     console.warn('TabContainerElement.detail is deprecated, please use .panel instead')
     return {relatedTarget: this.#panel}
+  }
+
+  #tabIndex: number | null = null
+  get tabIndex(): number | null {
+    return this.#tabIndex
   }
 
   #panel: Element | null = null
@@ -377,6 +386,7 @@ export class TabContainerElement extends HTMLElement {
     if (this.#setupComplete) {
       const cancelled = !this.dispatchEvent(
         new TabContainerChangeEvent('tab-container-change', {
+          tabIndex: index,
           bubbles: true,
           cancelable: true,
           tab: selectedTab,
@@ -412,6 +422,7 @@ export class TabContainerElement extends HTMLElement {
       selectedTab.focus()
       this.dispatchEvent(
         new TabContainerChangeEvent('tab-container-changed', {
+          tabIndex: index,
           bubbles: true,
           tab: selectedTab,
           panel: selectedPanel,

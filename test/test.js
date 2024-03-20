@@ -186,7 +186,7 @@ describe('tab-container', function () {
       expect(document.body).to.be.accessible()
     })
 
-    it('click works and `tab-container-changed` event is dispatched', function () {
+    it('click works and `tab-container-changed` event is dispatched with correct index', function () {
       tabs[1].click()
       assert.deepStrictEqual(tabs.map(isSelected), [false, true, false], 'Second tab is selected')
       assert.deepStrictEqual(panels.map(isHidden), [true, false, true], 'Second panel is visible')
@@ -200,6 +200,11 @@ describe('tab-container', function () {
         events.map(e => e.tab),
         [tabs[1], tabs[1]],
         'change events point to second tab',
+      )
+      assert.deepStrictEqual(
+        events.map(e => e.tabIndex),
+        [1, 1],
+        'change events point to second tabIndex',
       )
       assert.deepStrictEqual(
         events.map(e => e.panel),

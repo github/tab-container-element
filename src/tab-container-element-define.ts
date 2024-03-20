@@ -1,4 +1,4 @@
-import {TabContainerElement} from './tab-container-element.js'
+import {TabContainerChangeEvent, TabContainerElement} from './tab-container-element.js'
 
 const root = (typeof globalThis !== 'undefined' ? globalThis : window) as typeof window
 try {
@@ -26,6 +26,14 @@ declare global {
     interface IntrinsicElements {
       ['tab-container']: JSXBase['span'] & Partial<Omit<TabContainerElement, keyof HTMLElement>>
     }
+  }
+  interface GlobalEventHandlersEventMap {
+    'tab-container-change': TabContainerChangeEvent
+    'tab-container-changed': TabContainerChangeEvent
+  }
+  interface ElementEventMap {
+    'tab-container-change': TabContainerChangeEvent
+    'tab-container-changed': TabContainerChangeEvent
   }
 }
 

@@ -119,6 +119,11 @@
             },
             {
               "kind": "field",
+              "name": "tabIndex",
+              "readonly": true
+            },
+            {
+              "kind": "field",
               "name": "panel",
               "readonly": true
             },
@@ -330,6 +335,23 @@
             {
               "kind": "field",
               "name": "detail",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "#tabIndex",
+              "privacy": "private",
+              "type": {
+                "text": "number | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "tabIndex",
+              "type": {
+                "text": "number | null"
+              },
               "readonly": true
             },
             {
