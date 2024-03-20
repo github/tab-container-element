@@ -29,8 +29,8 @@ const shadowHTML = html`
 export interface ElementRender {
   renderShadow(): string
   shadowRootOptions?: {
-    shadowrootmode?: 'open' | 'closed',
-    delegatesFocus?: boolean,
+    shadowrootmode?: 'open' | 'closed'
+    delegatesFocus?: boolean
   }
 }
 
@@ -84,9 +84,9 @@ export class TabContainerElement extends HTMLElement {
   static renderShadow() {
     return shadowHTML
   }
-  
+
   static shadowRootOptions = {
-    shadowrootmode: 'open'
+    shadowrootmode: 'open',
   }
 
   // Passing `null` clears the policy.

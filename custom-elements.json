@@ -420,6 +420,15 @@
               "static": true
             },
             {
+              "kind": "field",
+              "name": "shadowRootOptions",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{\n    shadowrootmode: 'open',\n  }"
+            },
+            {
               "kind": "method",
               "name": "setCSPTrustedTypesPolicy",
               "static": true,

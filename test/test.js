@@ -1,5 +1,5 @@
 import {assert, expect} from '@open-wc/testing'
-import '../src/index.ts'
+import TabContainerElement from '../src/index.ts'
 
 describe('tab-container', function () {
   const isSelected = e => e.matches('[aria-selected=true]')
@@ -8,6 +8,23 @@ describe('tab-container', function () {
   let tabs = []
   let panels = []
   let events = []
+
+  describe('Shadow DOM', function () {
+    it('`renderShadow` contains the correct string representation', function () {
+      const expected = `
+  <div style="display: flex" part="tablist-wrapper">
+    <slot part="before-tabs" name="before-tabs"></slot>
+    <div part="tablist-tab-wrapper">
+      <slot part="tablist" name="tablist"></slot>
+    </div>
+    <slot part="after-tabs" name="after-tabs"></slot>
+  </div>
+  <slot part="panel" name="panel" role="presentation"></slot>
+  <slot part="after-panels" name="after-panels"></slot>
+`
+      assert.equal(TabContainerElement.renderShadow(), expected)
+    })
+  })
 
   describe('element creation', function () {
     it('creates from document.createElement', function () {
