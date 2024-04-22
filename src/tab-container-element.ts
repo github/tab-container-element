@@ -104,7 +104,7 @@ export class TabContainerElement extends HTMLElement {
   }
 
   get #tabListTabWrapper() {
-    return this.shadowRoot!.querySelector<HTMLSlotElement>('div[part="tablist-tab-wrapper"]')!
+    return this.shadowRoot!.querySelector<HTMLSlotElement>('slot[part="tablist-tab-wrapper"]')!
   }
 
   get #beforeTabsSlot() {
@@ -165,8 +165,9 @@ export class TabContainerElement extends HTMLElement {
     const tabListContainer = document.createElement('div')
     tabListContainer.style.display = 'flex'
     tabListContainer.setAttribute('part', 'tablist-wrapper')
-    const tabListTabWrapper = document.createElement('div')
+    const tabListTabWrapper = document.createElement('slot')
     tabListTabWrapper.setAttribute('part', 'tablist-tab-wrapper')
+    tabListTabWrapper.setAttribute('name', 'tablist-tab-wrapper')
     const tabListSlot = document.createElement('slot')
     tabListSlot.setAttribute('part', 'tablist')
     tabListSlot.setAttribute('name', 'tablist')
@@ -275,7 +276,14 @@ export class TabContainerElement extends HTMLElement {
     if (!this.#setupComplete) {
       const tabListSlot = this.#tabListSlot
       const customTabList = this.querySelector('[role=tablist]')
-      if (customTabList && customTabList.closest(this.tagName) === this) {
+      const customTabListWrapper = this.querySelector('[slot=tablist-tab-wrapper]')
+      if (customTabListWrapper && customTabListWrapper.closest(this.tagName) === this) {
+        if (manualSlotsSupported) {
+          tabListSlot.assign(customTabListWrapper)
+        } else {
+          customTabListWrapper.setAttribute('slot', 'tablist')
+        }
+      } else if (customTabList && customTabList.closest(this.tagName) === this) {
         if (manualSlotsSupported) {
           tabListSlot.assign(customTabList)
         } else {
@@ -302,7 +310,11 @@ export class TabContainerElement extends HTMLElement {
       const afterSlotted: Element[] = []
       let autoSlotted = beforeSlotted
       for (const child of this.children) {
-        if (child.getAttribute('role') === 'tab' || child.getAttribute('role') === 'tablist') {
+        if (
+          child.getAttribute('role') === 'tab' ||
+          child.getAttribute('role') === 'tablist' ||
+          child.getAttribute('slot') === 'tablist-tab-wrapper'
+        ) {
           autoSlotted = afterTabSlotted
           continue
         }
