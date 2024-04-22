@@ -283,15 +283,13 @@ export class TabContainerElement extends HTMLElement {
         } else {
           customTabListWrapper.setAttribute('slot', 'tablist')
         }
-      }
-      else if (customTabList && customTabList.closest(this.tagName) === this) {
+      } else if (customTabList && customTabList.closest(this.tagName) === this) {
         if (manualSlotsSupported) {
           tabListSlot.assign(customTabList)
         } else {
           customTabList.setAttribute('slot', 'tablist')
         }
-      }
-      else {
+      } else {
         this.#tabListTabWrapper.role = 'tablist'
         if (manualSlotsSupported) {
           tabListSlot.assign(...[...this.children].filter(e => e.matches('[role=tab]')))
@@ -312,7 +310,11 @@ export class TabContainerElement extends HTMLElement {
       const afterSlotted: Element[] = []
       let autoSlotted = beforeSlotted
       for (const child of this.children) {
-        if (child.getAttribute('role') === 'tab' || child.getAttribute('role') === 'tablist') {
+        if (
+          child.getAttribute('role') === 'tab' ||
+          child.getAttribute('role') === 'tablist' ||
+          child.getAttribute('slot') === 'tablist-tab-wrapper'
+        ) {
           autoSlotted = afterTabSlotted
           continue
         }
