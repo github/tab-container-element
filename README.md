@@ -106,6 +106,70 @@ In those cases, apply `data-tab-container-no-tabstop` to the `tabpanel` element.
   </div>
 </tab-container>
 ```
+### Unmanaged slots
+
+`<tab-container>` aims to simplify complex markup away in the ShadowDOM, so that the HTML you end up writing is overall less. However sometimes it can be useful to have _full_ control over the markup. Each of the `::part` selectors are also `<slot>`s, this means you can take any part and slot it, overriding the built-in ShadowDOM.
+#### Unmanaged `tablist`
+
+You are able to provide your own `role=tablist` and `<tab-container>` will accommodate. This can be useful if you need extra presentational markup in the tablist. But remember:
+
+ - You must ensure that all child elements are `role=tab` or `role=presentational`.
+ - The element will still slot contents before and after this element, in order to correctly present the tablist.
+
+```html
+<tab-container>
+  <div role="tablist">
+      <my-icon name="tabs" role="presentational"></my-icon>
+      <button type="button" role="tab">Tab one</button>
+      <button type="button" role="tab">Tab two</button>
+  </div>
+  <div role="tabpanel"></div>
+  <div role="tabpanel"></div>
+</tab-container>
+```
+
+#### Unmanaged `tablist-tab-wrapper`
+
+You are able to slot the `tablist-tab-wrapper` part. This slot manages the tabs but not the before or after elements. In this way, you can put custom HTML inside the tab list. Bear in mind if you're supplying this element that:
+
+ - You must also supply a `role=tablist` as a child.
+ - You must ensure that all child elements are `role=tab` or `role=presentational`.
+ - The element will still slot contents before and after this element, in order to correctly present the tablist.
+
+```html
+<tab-container>
+  <div slot="tablist-tab-wrapper">
+    <div role="tablist">
+        <button type="button" role="tab">Tab one</button>
+        <button type="button" role="tab">Tab two</button>
+    </div>
+  </div>
+  <div role="tabpanel"></div>
+  <div role="tabpanel"></div>
+</tab-container>
+```
+#### Unmanaged `tablist-wrapper`
+
+If you want to take full control over the entire tab region, including managing the content before and after the tabs, then you can slot the `tablist-wrapper` element. Bear in mind if you're supplying this element that:
+
+ - `<tab-container>` will only manage slotting of `role=panel`. It won't manage elements before or after the tabs or panels.
+ - You won't be able to also slot the `tablist-tab-wrapper`. You can chose to omit this element though.
+ - You must also supply a `role=tablist` as a descendant.
+ - You must ensure that all child elements of the tablist `role=tab` or `role=presentational`.
+ - The element will still slot contents before and after this element, in order to correctly present the tablist.
+
+```html
+<tab-container>
+  <div slot="tablist-wrapper">
+    <div role="tablist">
+        <button type="button" role="tab">Tab one</button>
+        <button type="button" role="tab">Tab two</button>
+    </div>
+  </div>
+  <div role="tabpanel"></div>
+  <div role="tabpanel"></div>
+</tab-container>
+```
 
 ## Browser support
 
