@@ -441,6 +441,12 @@
             },
             {
               "kind": "field",
+              "name": "#tabListWrapper",
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "field",
               "name": "#tabListTabWrapper",
               "privacy": "private",
               "readonly": true
