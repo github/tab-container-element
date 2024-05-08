@@ -184,7 +184,6 @@ export class TabContainerElement extends HTMLElement {
     const panelSlot = document.createElement('slot')
     panelSlot.setAttribute('part', 'panel')
     panelSlot.setAttribute('name', 'panel')
-    panelSlot.setAttribute('role', 'presentation')
     const beforeTabSlot = document.createElement('slot')
     beforeTabSlot.setAttribute('part', 'before-tabs')
     beforeTabSlot.setAttribute('name', 'before-tabs')
