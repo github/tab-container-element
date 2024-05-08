@@ -41,6 +41,7 @@ If none of the tabs have `aria-selected=true`, then the first tab will be select
   <button type="button" id="tab-three" role="tab">Tab three</button>
   <!-- ... -->
 </tab-container>
+```
 
 ### Events
 
@@ -109,6 +110,7 @@ In those cases, apply `data-tab-container-no-tabstop` to the `tabpanel` element.
 ### Unmanaged slots
 
 `<tab-container>` aims to simplify complex markup away in the ShadowDOM, so that the HTML you end up writing is overall less. However sometimes it can be useful to have _full_ control over the markup. Each of the `::part` selectors are also `<slot>`s, this means you can take any part and slot it, overriding the built-in ShadowDOM.
+
 #### Unmanaged `tablist`
 
 You are able to provide your own `role=tablist` and `<tab-container>` will accommodate. This can be useful if you need extra presentational markup in the tablist. But remember:
@@ -148,6 +150,7 @@ You are able to slot the `tablist-tab-wrapper` part. This slot manages the tabs 
   <div role="tabpanel"></div>
 </tab-container>
 ```
+
 #### Unmanaged `tablist-wrapper`
 
 If you want to take full control over the entire tab region, including managing the content before and after the tabs, then you can slot the `tablist-wrapper` element. Bear in mind if you're supplying this element that:
