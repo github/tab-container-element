@@ -110,7 +110,7 @@ export class TabContainerElement extends HTMLElement {
   static observedAttributes = ['vertical']
 
   get #tabList() {
-    const wrapper = this.querySelector('[slot=tablist-wrapper],[slot=tablist-tab-wrapper]')
+    const wrapper = this.querySelector('[slot=tablist-wrapper]')
     if (wrapper?.closest(this.tagName) === this) {
       return wrapper.querySelector('[role=tablist]') as HTMLElement
     }
@@ -127,7 +127,7 @@ export class TabContainerElement extends HTMLElement {
   }
 
   get #tabListTabWrapper() {
-    return this.shadowRoot!.querySelector<HTMLSlotElement>('slot[part="tablist-tab-wrapper"]')!
+    return this.shadowRoot!.querySelector<HTMLElement>('div[part="tablist-tab-wrapper"]')!
   }
 
   get #beforeTabsSlot() {
@@ -189,7 +189,7 @@ export class TabContainerElement extends HTMLElement {
     tabListContainer.style.display = 'flex'
     tabListContainer.setAttribute('part', 'tablist-wrapper')
     tabListContainer.setAttribute('name', 'tablist-wrapper')
-    const tabListTabWrapper = document.createElement('slot')
+    const tabListTabWrapper = document.createElement('div')
     tabListTabWrapper.setAttribute('part', 'tablist-tab-wrapper')
     tabListTabWrapper.setAttribute('name', 'tablist-tab-wrapper')
     const tabListSlot = document.createElement('slot')
@@ -299,14 +299,10 @@ export class TabContainerElement extends HTMLElement {
     if (!this.#setupComplete) {
       const tabListSlot = this.#tabListSlot
       const tabListWrapper = this.#tabListWrapper
-      const tabListTabWrapper = this.#tabListTabWrapper
       const customTabList = this.querySelector('[role=tablist]')
       const customTabListWrapper = this.querySelector('[slot=tablist-wrapper]')
-      const customTabListTabWrapper = this.querySelector('[slot=tablist-tab-wrapper]')
       if (customTabListWrapper && customTabListWrapper.closest(this.tagName) === this) {
         assignSlotWithFallback(tabListWrapper, customTabListWrapper)
-      } else if (customTabListTabWrapper && customTabListTabWrapper.closest(this.tagName) === this) {
-        assignSlotWithFallback(tabListTabWrapper, customTabListTabWrapper)
       } else if (customTabList && customTabList.closest(this.tagName) === this) {
         assignSlotWithFallback(tabListSlot, customTabList)
       } else {
@@ -326,11 +322,7 @@ export class TabContainerElement extends HTMLElement {
         const afterSlotted: Element[] = []
         let autoSlotted = beforeSlotted
         for (const child of this.children) {
-          if (
-            child.getAttribute('role') === 'tab' ||
-            child.getAttribute('role') === 'tablist' ||
-            child.getAttribute('slot') === 'tablist-tab-wrapper'
-          ) {
+          if (child.getAttribute('role') === 'tab' || child.getAttribute('role') === 'tablist') {
             autoSlotted = afterTabSlotted
             continue
           }
