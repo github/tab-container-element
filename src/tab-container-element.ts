@@ -1,5 +1,20 @@
 const HTMLElement = globalThis.HTMLElement || (null as unknown as (typeof window)['HTMLElement'])
-const manualSlotsSupported = 'assign' in (globalThis.HTMLSlotElement?.prototype || {})
+
+// Function to see if manual slots are supported and if not, manual assign the slot attribute
+const assignSlotWithFallback =
+  'assign' in (globalThis.HTMLSlotElement?.prototype || {})
+    ? (slot: HTMLSlotElement, ...elements: Element[]) => {
+        slot.assign(...elements)
+      }
+    : (slot: HTMLSlotElement, ...elements: Element[]) => {
+        const host = (slot.getRootNode() as ShadowRoot).host
+        for (const element of host.querySelectorAll(`[slot="${slot.name}"]`)) {
+          element.removeAttribute('slot')
+        }
+        for (const element of elements) {
+          element.setAttribute('slot', slot.name)
+        }
+      }
 
 export class TabContainerChangeEvent extends Event {
   constructor(
@@ -289,32 +304,14 @@ export class TabContainerElement extends HTMLElement {
       const customTabListWrapper = this.querySelector('[slot=tablist-wrapper]')
       const customTabListTabWrapper = this.querySelector('[slot=tablist-tab-wrapper]')
       if (customTabListWrapper && customTabListWrapper.closest(this.tagName) === this) {
-        if (manualSlotsSupported) {
-          tabListWrapper.assign(customTabListWrapper)
-        } else {
-          customTabListWrapper.setAttribute('slot', 'tablist-wrapper')
-        }
+        assignSlotWithFallback(tabListWrapper, customTabListWrapper)
       } else if (customTabListTabWrapper && customTabListTabWrapper.closest(this.tagName) === this) {
-        if (manualSlotsSupported) {
-          tabListTabWrapper.assign(customTabListTabWrapper)
-        } else {
-          customTabListTabWrapper.setAttribute('slot', 'tablist-tab-wrapper')
-        }
+        assignSlotWithFallback(tabListTabWrapper, customTabListTabWrapper)
       } else if (customTabList && customTabList.closest(this.tagName) === this) {
-        if (manualSlotsSupported) {
-          tabListSlot.assign(customTabList)
-        } else {
-          customTabList.setAttribute('slot', 'tablist')
-        }
+        assignSlotWithFallback(tabListSlot, customTabList)
       } else {
         this.#tabListTabWrapper.role = 'tablist'
-        if (manualSlotsSupported) {
-          tabListSlot.assign(...[...this.children].filter(e => e.matches('[role=tab]')))
-        } else {
-          for (const e of this.children) {
-            if (e.matches('[role=tab]')) e.setAttribute('slot', 'tablist')
-          }
-        }
+        assignSlotWithFallback(tabListSlot, ...[...this.children].filter(e => e.matches('[role=tab]')))
       }
       const tabList = this.#tabList
       this.#reflectAttributeToShadow('aria-description', tabList)
@@ -349,15 +346,9 @@ export class TabContainerElement extends HTMLElement {
             autoSlotted.push(child)
           }
         }
-        if (manualSlotsSupported) {
-          this.#beforeTabsSlot.assign(...beforeSlotted)
-          this.#afterTabsSlot.assign(...afterTabSlotted)
-          this.#afterPanelsSlot.assign(...afterSlotted)
-        } else {
-          for (const el of beforeSlotted) el.setAttribute('slot', 'before-tabs')
-          for (const el of afterTabSlotted) el.setAttribute('slot', 'after-tabs')
-          for (const el of afterSlotted) el.setAttribute('slot', 'after-panels')
-        }
+        assignSlotWithFallback(this.#beforeTabsSlot, ...beforeSlotted)
+        assignSlotWithFallback(this.#afterTabsSlot, ...afterTabSlotted)
+        assignSlotWithFallback(this.#afterPanelsSlot, ...afterSlotted)
       }
       const defaultTab = this.defaultTabIndex
       const defaultIndex = defaultTab >= 0 ? defaultTab : this.selectedTabIndex
@@ -400,18 +391,11 @@ export class TabContainerElement extends HTMLElement {
       if (!panel.hasAttribute('tabindex') && !panel.hasAttribute('data-tab-container-no-tabstop')) {
         panel.setAttribute('tabindex', '0')
       }
-      if (!manualSlotsSupported && panel.hasAttribute('slot')) {
-        panel.removeAttribute('slot')
-      }
     }
 
     selectedTab.setAttribute('aria-selected', 'true')
     selectedTab.setAttribute('tabindex', '0')
-    if (manualSlotsSupported) {
-      this.#panelSlot.assign(selectedPanel)
-    } else {
-      selectedPanel.setAttribute('slot', 'panel')
-    }
+    assignSlotWithFallback(this.#panelSlot, selectedPanel)
     selectedPanel.hidden = false
 
     if (this.#setupComplete) {
