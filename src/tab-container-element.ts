@@ -220,14 +220,13 @@ export class TabContainerElement extends HTMLElement {
     this.addEventListener('keydown', this)
     this.addEventListener('click', this)
 
-    if (this.#tabs.length > 0) {
-      this.selectTab(-1)
-      this.#setupComplete = true
-    } else {
+    this.selectTab(-1)
+
+    if (!this.#setupComplete) {
       const mutationObserver = new MutationObserver(() => {
-        if (this.#tabs.length > 0) {
-          this.selectTab(-1)
-          this.#setupComplete = true
+        this.selectTab(-1)
+
+        if (this.#setupComplete) {
           mutationObserver.disconnect()
         }
       })
@@ -413,5 +412,7 @@ export class TabContainerElement extends HTMLElement {
         }),
       )
     }
+
+    this.#setupComplete = true
   }
 }

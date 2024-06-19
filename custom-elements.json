@@ -437,6 +437,9 @@
               "kind": "field",
               "name": "#tabList",
               "privacy": "private",
+              "type": {
+                "text": "HTMLElement"
+              },
               "readonly": true
             },
             {
