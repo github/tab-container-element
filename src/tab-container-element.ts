@@ -109,7 +109,7 @@ export class TabContainerElement extends HTMLElement {
 
   static observedAttributes = ['vertical']
 
-  get #tabList() {
+  get #tabList(): HTMLElement {
     const wrapper = this.querySelector('[slot=tablist-wrapper]')
     if (wrapper?.closest(this.tagName) === this) {
       return wrapper.querySelector('[role=tablist]') as HTMLElement
@@ -221,7 +221,18 @@ export class TabContainerElement extends HTMLElement {
     this.addEventListener('click', this)
 
     this.selectTab(-1)
-    this.#setupComplete = true
+
+    if (!this.#setupComplete) {
+      const mutationObserver = new MutationObserver(() => {
+        this.selectTab(-1)
+
+        if (this.#setupComplete) {
+          mutationObserver.disconnect()
+        }
+      })
+
+      mutationObserver.observe(this, {childList: true, subtree: true})
+    }
   }
 
   attributeChangedCallback(name: string) {
@@ -356,7 +367,7 @@ export class TabContainerElement extends HTMLElement {
      * Out of bounds index
      */
     if (index > tabs.length - 1) {
-      throw new RangeError(`Index "${index}" out of bounds`)
+      return
     }
 
     const selectedTab = tabs[index]
@@ -401,5 +412,7 @@ export class TabContainerElement extends HTMLElement {
         }),
       )
     }
+
+    this.#setupComplete = true
   }
 }

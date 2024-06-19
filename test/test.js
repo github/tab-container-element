@@ -339,11 +339,9 @@ describe('tab-container', function () {
     })
 
     it('result in noop, when selectTab receives out of bounds index', function () {
-      assert.throws(() => tabContainer.selectTab(3), 'Index "3" out of bounds')
-
-      tabContainer.selectTab(2)
-      assert.deepStrictEqual(tabs.map(isSelected), [false, false, true], 'Third tab is selected')
-      assert.deepStrictEqual(panels.map(isHidden), [true, true, false], 'Third panel is visible')
+      tabContainer.selectTab(3)
+      assert.deepStrictEqual(tabs.map(isSelected), [true, false, false], 'First tab is selected')
+      assert.deepStrictEqual(panels.map(isHidden), [false, true, true], 'First panel is visible')
     })
   })
 
