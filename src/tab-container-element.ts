@@ -373,6 +373,9 @@ export class TabContainerElement extends HTMLElement {
     const selectedTab = tabs[index]
     const selectedPanel = panels[index]
 
+    if (!selectedTab) return
+    if (!selectedPanel) return
+
     if (this.#setupComplete) {
       const cancelled = !this.dispatchEvent(
         new TabContainerChangeEvent('tab-container-change', {
