@@ -9,16 +9,16 @@
         {
           "kind": "variable",
           "name": "TabContainerChangeEvent",
-          "default": "class extends Event {\n  static"
+          "default": "_TabContainerChangeEvent"
         },
         {
           "kind": "variable",
           "name": "TabContainerElement",
-          "default": "class extends HTMLElement {\n  static"
+          "default": "_TabContainerElement"
         },
         {
           "kind": "variable",
-          "name": "index_default",
+          "name": "dist_default",
           "default": "TabContainerElement"
         }
       ],
@@ -43,7 +43,7 @@
           "kind": "js",
           "name": "default",
           "declaration": {
-            "name": "index_default",
+            "name": "dist_default",
             "module": "dist/bundle.js"
           }
         }
