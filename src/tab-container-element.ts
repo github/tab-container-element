@@ -306,7 +306,8 @@ export class TabContainerElement extends HTMLElement {
     this.setAttribute('default-tab', String(index))
   }
 
-  selectTab(index: number): void {
+  selectTab(index: number, options: {focus?: boolean} = {}): void {
+    const {focus = true} = options
     if (!this.#setupComplete) {
       const tabListSlot = this.#tabListSlot
       const tabListWrapper = this.#tabListWrapper
@@ -405,7 +406,9 @@ export class TabContainerElement extends HTMLElement {
     selectedPanel.hidden = false
 
     if (this.#setupComplete) {
-      selectedTab.focus()
+      if (focus) {
+        selectedTab.focus()
+      }
       this.dispatchEvent(
         new TabContainerChangeEvent('tab-container-changed', {
           tabIndex: index,
