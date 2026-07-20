@@ -343,6 +343,26 @@ describe('tab-container', function () {
       assert.deepStrictEqual(tabs.map(isSelected), [true, false, false], 'First tab is selected')
       assert.deepStrictEqual(panels.map(isHidden), [false, true, true], 'First panel is visible')
     })
+
+    it('`selectTab` supports `focus` option', function () {
+      const button = document.createElement('button')
+      button.textContent = 'button'
+      document.body.appendChild(button)
+      button.focus()
+
+      tabContainer.selectTab(1, {focus: false})
+      assert.equal(tabContainer.selectedTabIndex, 1)
+      assert.equal(document.activeElement, button)
+
+      tabContainer.selectTab(2, {focus: true})
+      assert.equal(tabContainer.selectedTabIndex, 2)
+      assert.equal(document.activeElement, tabs[2])
+
+      // Default is `focus: true`.
+      tabContainer.selectTab(0)
+      assert.equal(tabContainer.selectedTabIndex, 0)
+      assert.equal(document.activeElement, tabs[0])
+    })
   })
 
   describe('nesting', function () {

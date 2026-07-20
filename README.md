@@ -48,6 +48,10 @@ If none of the tabs have `aria-selected=true`, then the first tab will be select
 - `tab-container-change` (bubbles, cancelable): fired on `<tab-container>` before a new tab is selected and visibility is updated. `event.tab` is the tab that will be focused, `event.tabIndex` is the 0-based index of the `tab` and `tab.panel` is the panel that will be shown if the event isn't cancelled.
 - `tab-container-changed` (bubbles): fired on `<tab-container>` after a new tab is selected and visibility is updated. `event.tab` is the tab that is now active (and will be focused right after this event), `event.tabIndex` is the 0-based index of the `tab` and `event.panel` is the newly visible tab panel.
 
+### Methods
+
+- `selectTab(tabIndex, options: {focus?: boolean} = {})`: programmatically selects the tab with the given 0-based index and shows its panel. Fires events as described above. By default, sets focus to the selected tab; call with `{focus: false}` to prevent this.
+
 ### Parts
 
 - `::part(tablist-wrapper)` is the wrapper which contains `before-tabs`, `tablist` and `after-tabs`.
