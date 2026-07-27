@@ -87,19 +87,22 @@ describe('tab-container', function () {
         </div>
       </tab-container>
       `
+      tabContainer = document.querySelector('tab-container')
       tabs = Array.from(document.querySelectorAll('button'))
       panels = Array.from(document.querySelectorAll('[role="tabpanel"]'))
     })
 
-    afterEach(function () {
+    afterEach(async function () {
       // Check to make sure we still have accessible markup after the test finishes running.
-      expect(document.body).to.be.accessible()
-
-      document.body.innerHTML = ''
+      try {
+        await expect(tabContainer).to.be.accessible()
+      } finally {
+        document.body.innerHTML = ''
+      }
     })
 
     it('has accessible markup', function () {
-      expect(document.body).to.be.accessible()
+      return expect(tabContainer).to.be.accessible()
     })
 
     it('the second tab is still selected', function () {
@@ -126,19 +129,22 @@ describe('tab-container', function () {
         </div>
       </tab-container>
       `
+      tabContainer = document.querySelector('tab-container')
       tabs = Array.from(document.querySelectorAll('button'))
       panels = Array.from(document.querySelectorAll('[role="tabpanel"]'))
     })
 
-    afterEach(function () {
+    afterEach(async function () {
       // Check to make sure we still have accessible markup after the test finishes running.
-      expect(document.body).to.be.accessible()
-
-      document.body.innerHTML = ''
+      try {
+        await expect(tabContainer).to.be.accessible()
+      } finally {
+        document.body.innerHTML = ''
+      }
     })
 
     it('has accessible markup', function () {
-      expect(document.body).to.be.accessible()
+      return expect(tabContainer).to.be.accessible()
     })
 
     it('the second tab is still selected', function () {
@@ -175,15 +181,17 @@ describe('tab-container', function () {
       tabContainer.addEventListener('tab-container-changed', e => events.push(e))
     })
 
-    afterEach(function () {
+    afterEach(async function () {
       // Check to make sure we still have accessible markup after the test finishes running.
-      expect(document.body).to.be.accessible()
-
-      document.body.innerHTML = ''
+      try {
+        await expect(tabContainer).to.be.accessible()
+      } finally {
+        document.body.innerHTML = ''
+      }
     })
 
     it('has accessible markup', function () {
-      expect(document.body).to.be.accessible()
+      return expect(tabContainer).to.be.accessible()
     })
 
     it('click works and `tab-container-changed` event is dispatched with correct index', function () {
@@ -404,15 +412,17 @@ describe('tab-container', function () {
       tabContainer.addEventListener('tab-container-changed', e => events.push(e))
     })
 
-    afterEach(function () {
+    afterEach(async function () {
       // Check to make sure we still have accessible markup after the test finishes running.
-      expect(document.body).to.be.accessible()
-
-      document.body.innerHTML = ''
+      try {
+        await expect(tabContainer).to.be.accessible()
+      } finally {
+        document.body.innerHTML = ''
+      }
     })
 
     it('has accessible markup', function () {
-      expect(document.body).to.be.accessible()
+      return expect(tabContainer).to.be.accessible()
     })
 
     it('only switches closest tab-containers on click', () => {
@@ -710,19 +720,22 @@ describe('tab-container', function () {
         </div>
       </tab-container>
       `
+      tabContainer = document.querySelector('tab-container')
       tabs = Array.from(document.querySelectorAll('button'))
       panels = Array.from(document.querySelectorAll('[role="tabpanel"]'))
     })
 
-    afterEach(function () {
+    afterEach(async function () {
       // Check to make sure we still have accessible markup after the test finishes running.
-      expect(document.body).to.be.accessible()
-
-      document.body.innerHTML = ''
+      try {
+        await expect(tabContainer).to.be.accessible()
+      } finally {
+        document.body.innerHTML = ''
+      }
     })
 
     it('has accessible markup', function () {
-      expect(document.body).to.be.accessible()
+      return expect(tabContainer).to.be.accessible()
     })
 
     it('the second tab is still selected', function () {
