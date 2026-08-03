@@ -37,4 +37,4 @@ jobs:
       - run: npm version ${TAG_NAME} --git-tag-version=false --allow-same-version
         env:
           TAG_NAME: ${{ github.event.release.tag_name || inputs.tag }}
-      - run: npm --ignore-scripts publish --provenance
+      - run: npm --ignore-scripts publish --provenance --access public
