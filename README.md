@@ -197,6 +197,26 @@ npm install
 npm test
 ```
 
+## Publishing
+
+To publish a new version:
+
+1. Run `npm version <version> --no-git-tag-version` (for example, `npm version 4.10.0 --no-git-tag-version`) to update the version in `package.json` and `package-lock.json`.
+2. Open a pull request with the version change and merge it into `main`.
+3. Create a GitHub release from `main` with a tag that exactly matches the new version (for example, `4.10.0`).
+
+Creating the release triggers the [Publish workflow](https://github.com/github/tab-container-element/actions/workflows/publish.yml), which tests the tagged commit and publishes the package to npm automatically.
+
+### Publishing manually
+
+To publish an existing version tag manually:
+
+1. Open the [Publish workflow](https://github.com/github/tab-container-element/actions/workflows/publish.yml).
+2. Select **Run workflow**.
+3. Enter the existing version tag to publish and run the workflow.
+
+The manual workflow run validates and checks out the tag before testing and publishing it to npm.
+
 ## License
 
 Distributed under the MIT license. See LICENSE for details.
