@@ -1,5 +1,6 @@
 import {assert, expect} from '@open-wc/testing'
 import '../src/index.ts'
+import {TabContainerChangeEvent} from '../src/tab-container-element.ts'
 
 describe('tab-container', function () {
   const isSelected = e => e.matches('[aria-selected=true]')
@@ -22,6 +23,11 @@ describe('tab-container', function () {
   })
 
   describe('events', function () {
+    it('preserves a zero event index and defaults an omitted index to null', function () {
+      assert.strictEqual(new TabContainerChangeEvent('tab-container-change', {tabIndex: 0}).tabIndex, 0)
+      assert.strictEqual(new TabContainerChangeEvent('tab-container-change', {}).tabIndex, null)
+    })
+
     it('has an onTabContainerChange property for the change event', function () {
       const el = document.createElement('tab-container')
       let called = false
@@ -192,6 +198,25 @@ describe('tab-container', function () {
 
     it('has accessible markup', function () {
       return expect(tabContainer).to.be.accessible()
+    })
+
+    it('reports index zero in both events when selecting the first tab', function () {
+      tabContainer.selectTab(1)
+      events.length = 0
+      tabContainer.selectTab(0)
+
+      assert.deepStrictEqual(
+        events.map(event => event.tabIndex),
+        [0, 0],
+      )
+      assert.deepStrictEqual(
+        events.map(event => event.tab),
+        [tabs[0], tabs[0]],
+      )
+      assert.deepStrictEqual(
+        events.map(event => event.panel),
+        [panels[0], panels[0]],
+      )
     })
 
     it('click works and `tab-container-changed` event is dispatched with correct index', function () {

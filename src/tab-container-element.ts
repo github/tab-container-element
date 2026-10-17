@@ -23,7 +23,7 @@ export class TabContainerChangeEvent extends Event {
   ) {
     super(type, init)
     this.#tab = tab || null
-    this.#tabIndex = tabIndex || null
+    this.#tabIndex = tabIndex ?? null
     this.#panel = panel || null
   }
 
